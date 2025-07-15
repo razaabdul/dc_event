@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catering Calculator - Dream Creation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: #2c2c2c;
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f4d03f;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .logo::before {
+            content: "💛 ";
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            color: #f4d03f;
+        }
+
+        .nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #f4d03f;
+            transition: width 0.3s ease;
+        }
+
+        .nav a:hover::after,
+        .nav a.active::after {
+            width: 100%;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #2c2c2c;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* Guest Counter */
+        .guest-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .guest-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2c2c2c;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .guest-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .guest-input {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 25px;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .guest-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f4d03f;
+            color: #2c2c2c;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .guest-btn:hover {
+            background: #f1c40f;
+            transform: scale(1.1);
+        }
+
+        .guest-display {
+            width: 80px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 18px;
+            color: #2c2c2c;
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
+        /* Menu Layout */
+        .menu-layout {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .menu-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        /* Category Sections */
+        .category-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .category-header {
+            background: #2c2c2c;
+            color: white;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .category-header.appetizer::before {
+            content: "🥗 ";
+            margin-right: 10px;
+        }
+
+        .category-header.main::before {
+            content: "🍽️ ";
+            margin-right: 10px;
+        }
+
+        .category-header.dessert::before {
+            content: "🍰 ";
+            margin-right: 10px;
+        }
+
+        .dish-list {
+            padding: 20px;
+        }
+
+        .dish-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .dish-item:last-child {
+            border-bottom: none;
+        }
+
+        .dish-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+            background: #27ae60; /* Default to veg */
+        }
+
+        .dish-info {
+            flex: 1;
+        }
+
+        .dish-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-bottom: 4px;
+        }
+
+        .dish-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .dish-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f4d03f;
+            margin-bottom: 2px;
+        }
+
+        .price-label {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .dish-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 25px;
+            padding: 5px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: #f4d03f;
+            color: #2c2c2c;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background: #f1c40f;
+            transform: scale(1.1);
+        }
+
+        .quantity-btn:disabled {
+            background: #ddd;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .quantity-display {
+            width: 40px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+            color: #2c2c2c;
+        }
+
+        .dish-total {
+            font-size: 14px;
+            color: #f4d03f;
+            font-weight: 600;
+        }
+
+        /* Summary Box */
+        .summary-box {
+            width: 300px;
+            background: #2c2c2c;
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .summary-box h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #f4d03f;
+            text-align: center;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .summary-item:last-of-type {
+            border-bottom: 2px solid #f4d03f;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+        }
+
+        .summary-label {
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: #f4d03f;
+        }
+
+        .final-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .final-total .summary-value {
+            font-size: 1.3rem;
+        }
+
+        .quote-btn {
+            width: 100%;
+            background: #f4d03f;
+            color: #2c2c2c;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quote-btn:hover {
+            background: #f1c40f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(244, 208, 63, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .menu-layout {
+                flex-direction: column;
+            }
+
+            .summary-box {
+                width: 100%;
+                position: static;
+            }
+
+            .menu-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .guest-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">Dream Creation</div>
+            <nav class="nav">
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('packages') }}">Packages</a>
+                <a href="{{ url_for('services') }}">Services</a>
+                <a href="{{ url_for('events') }}">Events</a>
+                <a href="{{ url_for('dishes') }}" class="active">Dishes</a>
+                <a href="{{ url_for('contact') }}">Contact</a>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1 class="page-title">Exquisite Catering Calculator</h1>
+        <p class="page-subtitle">Calculate your perfect catering package for any event</p>
+
+        <!-- Guest Counter Section -->
+        <div class="guest-section">
+            <h3>Number of Guests</h3>
+            <div class="guest-controls">
+                <div class="guest-input">
+                    <button class="guest-btn" onclick="changeGuests(-1)">−</button>
+                    <input type="number" class="guest-display" id="guest-count" value="100" min="1" onchange="updateTotal()" >
+                    <button class="guest-btn" onclick="changeGuests(1)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Layout -->
+        <div class="menu-layout">
+            <div class="menu-content">
+                {% set categories = ['Appetizer', 'Main Course', 'Dessert'] %}
+                {% for category in categories %}
+                    {% set category_dishes = dishes|selectattr('category', 'equalto', category)|list %}
+                    {% if category_dishes %}
+                    <div class="category-section">
+                        <div class="category-header {{ category.lower() }}">{{ category }}s</div>
+                        <div class="dish-list">
+                            {% for dish in category_dishes %}
+                            <div class="dish-item">
+                                <div class="dish-indicator"></div>
+                                <div class="dish-info">
+                                    <div class="dish-name">{{ dish.name }}</div>
+                                    <div class="dish-description">{{ dish.description or 'Delicious ' + dish.name.lower() + ' prepared with finest ingredients' }}</div>
+                                    <div class="dish-price">₹{{ dish.price }}</div>
+                                    <div class="price-label">per plate</div>
+                                </div>
+                                <div class="dish-actions">
+                                    <div class="quantity-controls">
+                                        <button class="quantity-btn" onclick="changeDishQuantity({{ dish.id }}, -1)" disabled>−</button>
+                                        <div class="quantity-display" id="qty-{{ dish.id }}">0</div>
+                                        <button class="quantity-btn" onclick="changeDishQuantity({{ dish.id }}, 1)">+</button>
+                                    </div>
+                                    <div class="dish-total">Total: ₹<span id="total-{{ dish.id }}">0</span></div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            <!-- Summary Box -->
+            <div class="summary-box">
+                <h3>Order Summary</h3>
+                <div class="summary-item">
+                    <span class="summary-label">Per Guest Total:</span>
+                    <span class="summary-value">₹<span id="per-guest-total">0</span></span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Total Guests:</span>
+                    <span class="summary-value"><span id="guest-output">100</span></span>
+                </div>
+                <div class="final-total">
+                    <span class="summary-label">Final Total:</span>
+                    <span class="summary-value">₹<span id="final-total">0</span></span>
+                </div>
+                <button class="quote-btn" onclick="getQuote()">Get Quote</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store dish data from Flask template
+        const dishData = {
+            {% for dish in dishes %}
+            {{ dish.id }}: {
+                id: {{ dish.id }},
+                name: "{{ dish.name }}",
+                price: {{ dish.price }},
+                category: "{{ dish.category }}",
+                description: "{{ dish.description or '' }}",
+                quantity: 0
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        };
+
+        // Change guest count
+        function changeGuests(change) {
+            const guestInput = document.getElementById('guest-count');
+            let currentGuests = parseInt(guestInput.value) || 0;
+            let newGuests = Math.max(1, currentGuests + change);
+            guestInput.value = newGuests;
+            updateTotal();
+        }
+
+        // Change dish quantity
+        function changeDishQuantity(dishId, change) {
+            const dish = dishData[dishId];
+            if (!dish) return;
+
+            dish.quantity = Math.max(0, dish.quantity + change);
+            
+            // Update UI
+            document.getElementById(`qty-${dishId}`).textContent = dish.quantity;
+            document.getElementById(`total-${dishId}`).textContent = dish.price * dish.quantity;
+            
+            // Update minus button state
+            const minusBtn = document.querySelector(`[onclick="changeDishQuantity(${dishId}, -1)"]`);
+            minusBtn.disabled = dish.quantity <= 0;
+            
+            updateTotal();
+        }
+
+        // Update total calculations
+        function updateTotal() {
+            const guestCount = parseInt(document.getElementById('guest-count').value) || 0;
+            document.getElementById('guest-output').textContent = guestCount;
+
+            let perGuestTotal = 0;
+
+            // Calculate total from all dishes
+            Object.values(dishData).forEach(dish => {
+                perGuestTotal += dish.price * dish.quantity;
+            });
+
+            document.getElementById('per-guest-total').textContent = perGuestTotal;
+            document.getElementById('final-total').textContent = perGuestTotal * guestCount;
+        }
+
+        // Get quote function
+        function getQuote() {
+            const guestCount = parseInt(document.getElementById('guest-count').value) || 0;
+            const finalTotal = parseInt(document.getElementById('final-total').textContent) || 0;
+            
+            if (finalTotal === 0) {
+                alert('Please select some dishes to get a quote!');
+                return;
+            }
+
+            let selectedDishes = [];
+            Object.values(dishData).forEach(dish => {
+                if (dish.quantity > 0) {
+                    selectedDishes.push(`${dish.name} x${dish.quantity}`);
+                }
+            });
+
+            const message = `Quote Request:\n\nGuests: ${guestCount}\nSelected Dishes:\n${selectedDishes.join('\n')}\n\nTotal Amount: ₹${finalTotal}\n\nThank you for choosing Dream Creation!`;
+            
+            alert(message);
+            
+            // You can also send this data to your Flask backend
+            // fetch('/submit-quote', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify({
+            //         guests: guestCount,
+            //         dishes: Object.values(dishData).filter(d => d.quantity > 0),
+            //         total: finalTotal
+            //     })
+            // });
+        }
+
+        // Initialize the page
+        updateTotal();
+    </script>
+</body>
+</html>

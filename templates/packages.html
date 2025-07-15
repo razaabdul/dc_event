@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Wedding Packages - Dream Creation{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>Wedding Packages</h1>
+        <p>Choose the perfect package for your dream wedding</p>
+    </div>
+</section>
+
+<!-- Packages Section -->
+<section class="packages-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Our Wedding Packages</h2>
+            <p>Carefully crafted packages to suit every budget and requirement</p>
+            <div class="section-divider"></div>
+        </div>
+        
+        <div class="packages-grid">
+            {% for package in packages %}
+            <div class="package-card {{ 'popular' if package.popular }}">
+                {% if package.popular %}
+                <div class="popular-badge">Most Popular</div>
+                {% endif %}
+                
+                <div class="package-header">
+                    <h3>{{ package.name }}</h3>
+                    <div class="package-price">
+                        <span class="price">{{ package.price }}</span>
+                        <span class="unit">onwards</span>
+                    </div>
+                </div>
+                
+                <ul class="features-list">
+                    {% for feature in package.features %}
+                    <li><i class="fas fa-check"></i> {{ feature }}</li>
+                    {% endfor %}
+                </ul>
+                
+                <a href="{{ url_for('contact') }}?package={{ package.name }}" 
+                   class="btn {{ 'btn-primary' if package.popular else 'btn-outline' }} package-btn">
+                    Choose Package
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Custom Package Section -->
+        <div class="custom-package-section">
+            <div class="custom-package-card">
+                <div class="custom-package-content">
+                    <h3>Need a Custom Package?</h3>
+                    <p>We understand that every wedding is unique. Let us create a personalized package that perfectly fits your vision and budget.</p>
+                    <a href="{{ url_for('contact') }}" class="btn btn-primary">
+                        <i class="fas fa-comments"></i>
+                        Discuss Custom Package
+                    </a>
+                </div>
+                <div class="custom-package-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Package Comparison Section -->
+<section class="package-comparison">
+    <div class="container">
+        <div class="section-header">
+            <h2>Package Comparison</h2>
+            <p>Compare our packages to find the one that's right for you</p>
+            <div class="section-divider"></div>
+        </div>
+        
+        <div class="comparison-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Features</th>
+                        <th>Silver</th>
+                        <th>Gold</th>
+                        <th>Platinum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Decoration</td>
+                        <td>Basic</td>
+                        <td>Premium</td>
+                        <td>Luxury</td>
+                    </tr>
+                    <tr>
+                        <td>Photography</td>
+                        <td>4 hours</td>
+                        <td>8 hours + Video</td>
+                        <td>Full Day + Video</td>
+                    </tr>
+                    <tr>
+                        <td>Catering</td>
+                        <td>50 guests</td>
+                        <td>100 guests</td>
+                        <td>200 guests</td>
+                    </tr>
+                    <tr>
+                        <td>Makeup</td>
+                        <td>-</td>
+                        <td>Bridal</td>
+                        <td>Bridal + Groom</td>
+                    </tr>
+                    <tr>
+                        <td>Transportation</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>Luxury Car</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    background: var(--gradient-black);
+    color: var(--white);
+    padding: 120px 0 80px;
+    text-align: center;
+}
+
+.page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--accent-gold);
+}
+
+.custom-package-section {
+    margin-top: 4rem;
+}
+
+.custom-package-card {
+    background: var(--gradient-gold);
+    color: var(--primary-black);
+    padding: 3rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.custom-package-icon {
+    font-size: 4rem;
+}
+
+.package-comparison {
+    background: var(--light-gray);
+    padding: 80px 0;
+}
+
+.comparison-table {
+    overflow-x: auto;
+}
+
+.comparison-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow-medium);
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.comparison-table th {
+    background: var(--primary-black);
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.comparison-table tr:hover {
+    background: rgba(212, 175, 55, 0.05);
+}
+
+@media (max-width: 768px) {
+    .custom-package-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+}
+</style>
+{% endblock %}

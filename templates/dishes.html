@@ -1,0 +1,452 @@
+{% extends "base.html" %}
+
+{% block title %}Wedding Catering - Dream Creation{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <h1>Wedding Catering</h1>
+        <p>Delicious cuisine crafted by our expert chefs</p>
+    </div>
+</section>
+
+<!-- Menu Section -->
+<section class="catering-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Our Menu</h2>
+            <p>Explore our diverse range of delicious dishes for your special day</p>
+            <div class="section-divider"></div>
+        </div>
+        
+        <div class="catering-grid">
+            <!-- Appetizers -->
+            <div class="catering-card">
+                <div class="catering-header">
+                    <i class="fas fa-seedling"></i>
+                    <h3>Appetizers</h3>
+                </div>
+                {% for dish in dishes.appetizers %}
+                <div class="menu-item">
+                    <div class="item-info">
+                        <div class="veg-indicator {{ 'veg' if dish.veg else 'non-veg' }}"></div>
+                        <span class="item-name">{{ dish.name }}</span>
+                    </div>
+                    <div class="item-price">
+                        <span class="price">{{ dish.price }}</span>
+                        <span class="unit">per plate</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Main Course -->
+            <div class="catering-card">
+                <div class="catering-header">
+                    <i class="fas fa-utensils"></i>
+                    <h3>Main Course</h3>
+                </div>
+                {% for dish in dishes.main_course %}
+                <div class="menu-item">
+                    <div class="item-info">
+                        <div class="veg-indicator {{ 'veg' if dish.veg else 'non-veg' }}"></div>
+                        <span class="item-name">{{ dish.name }}</span>
+                    </div>
+                    <div class="item-price">
+                        <span class="price">{{ dish.price }}</span>
+                        <span class="unit">per plate</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Desserts -->
+            <div class="catering-card">
+                <div class="catering-header">
+                    <i class="fas fa-birthday-cake"></i>
+                    <h3>Desserts</h3>
+                </div>
+                {% for dish in dishes.desserts %}
+                <div class="menu-item">
+                    <div class="item-info">
+                        <div class="veg-indicator {{ 'veg' if dish.veg else 'non-veg' }}"></div>
+                        <span class="item-name">{{ dish.name }}</span>
+                    </div>
+                    <div class="item-price">
+                        <span class="price">{{ dish.price }}</span>
+                        <span class="unit">per plate</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Bulk Pricing -->
+        <div class="bulk-pricing">
+            <div class="bulk-card">
+                <div class="bulk-info">
+                    <h3>Bulk Catering Available</h3>
+                    <p>Special rates for large gatherings. Contact us for custom pricing based on guest count.</p>
+                    <a href="{{ url_for('contact') }}" class="btn btn-primary">Get Bulk Quote</a>
+                </div>
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cuisine Types Section -->
+<section class="cuisine-types">
+    <div class="container">
+        <div class="section-header">
+            <h2>Cuisine Specialties</h2>
+            <p>We offer a wide variety of cuisines to satisfy every palate</p>
+            <div class="section-divider"></div>
+        </div>
+        
+        <div class="cuisine-grid">
+            <div class="cuisine-card">
+                <div class="cuisine-icon">
+                    <i class="fas fa-pepper-hot"></i>
+                </div>
+                <h3>North Indian</h3>
+                <p>Rich and flavorful dishes from the northern regions of India, including tandoori specialties and creamy curries.</p>
+                <ul>
+                    <li>Butter Chicken</li>
+                    <li>Dal Makhani</li>
+                    <li>Naan & Roti</li>
+                    <li>Tandoori Items</li>
+                </ul>
+            </div>
+            
+            <div class="cuisine-card">
+                <div class="cuisine-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h3>South Indian</h3>
+                <p>Authentic South Indian delicacies with coconut-based curries and traditional preparations.</p>
+                <ul>
+                    <li>Sambar & Rasam</li>
+                    <li>Dosa & Idli</li>
+                    <li>Coconut Rice</li>
+                    <li>Filter Coffee</li>
+                </ul>
+            </div>
+            
+            <div class="cuisine-card">
+                <div class="cuisine-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3>Continental</h3>
+                <p>International cuisine options including pasta, salads, and grilled specialties.</p>
+                <ul>
+                    <li>Pasta & Pizza</li>
+                    <li>Grilled Items</li>
+                    <li>Fresh Salads</li>
+                    <li>Soups</li>
+                </ul>
+            </div>
+            
+            <div class="cuisine-card">
+                <div class="cuisine-icon">
+                    <i class="fas fa-cookie-bite"></i>
+                </div>
+                <h3>Desserts</h3>
+                <p>Traditional and modern desserts to sweeten your celebration.</p>
+                <ul>
+                    <li>Indian Sweets</li>
+                    <li>Ice Cream</li>
+                    <li>Cakes & Pastries</li>
+                    <li>Live Counters</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Live Counters Section -->
+<section class="live-counters">
+    <div class="container">
+        <div class="section-header">
+            <h2>Live Food Counters</h2>
+            <p>Interactive cooking stations for a memorable dining experience</p>
+            <div class="section-divider"></div>
+        </div>
+        
+        <div class="counters-grid">
+            <div class="counter-card">
+                <div class="counter-image">
+                    <img src="/placeholder.svg?height=200&width=300" alt="Chaat Counter">
+                </div>
+                <div class="counter-content">
+                    <h3>Chaat Counter</h3>
+                    <p>Live preparation of popular Indian street food items like pani puri, bhel puri, and aloo tikki.</p>
+                </div>
+            </div>
+            
+            <div class="counter-card">
+                <div class="counter-image">
+                    <img src="/placeholder.svg?height=200&width=300" alt="Pasta Counter">
+                </div>
+                <div class="counter-content">
+                    <h3>Pasta Counter</h3>
+                    <p>Fresh pasta prepared with choice of sauces and toppings, cooked to order.</p>
+                </div>
+            </div>
+            
+            <div class="counter-card">
+                <div class="counter-image">
+                    <img src="/placeholder.svg?height=200&width=300" alt="Dosa Counter">
+                </div>
+                <div class="counter-content">
+                    <h3>Dosa Counter</h3>
+                    <p>Crispy dosas made fresh with various fillings and served with chutneys and sambar.</p>
+                </div>
+            </div>
+            
+            <div class="counter-card">
+                <div class="counter-image">
+                    <img src="/placeholder.svg?height=200&width=300" alt="Ice Cream Counter">
+                </div>
+                <div class="counter-content">
+                    <h3>Ice Cream Counter</h3>
+                    <p>Fresh ice cream with multiple flavors and toppings for a sweet ending to your meal.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Catering Features Section -->
+<section class="catering-features">
+    <div class="container">
+        <div class="section-header">
+            <h2>Why Choose Our Catering?</h2>
+            <p>What makes our catering service special</p>
+            <div class="section-divider"></div>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-chef-hat"></i>
+                </div>
+                <h3>Expert Chefs</h3>
+                <p>Experienced chefs who specialize in various cuisines and traditional cooking methods.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h3>Fresh Ingredients</h3>
+                <p>We use only the freshest ingredients sourced from trusted suppliers for quality taste.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h3>Professional Service</h3>
+                <p>Well-trained service staff to ensure smooth and elegant food service during your event.</p>
+            </div>
+            
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3>Custom Menus</h3>
+                <p>Personalized menu planning based on your preferences, dietary requirements, and budget.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-header {
+    background: var(--gradient-black);
+    color: var(--white);
+    padding: 120px 0 80px;
+    text-align: center;
+}
+
+.page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--accent-gold);
+}
+
+.cuisine-types {
+    background: var(--light-gray);
+    padding: 80px 0;
+}
+
+.cuisine-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.cuisine-card {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+}
+
+.cuisine-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+.cuisine-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.cuisine-icon i {
+    font-size: 2rem;
+    color: var(--primary-black);
+}
+
+.cuisine-card h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--primary-black);
+    margin-bottom: 1rem;
+}
+
+.cuisine-card ul {
+    list-style: none;
+    margin-top: 1rem;
+}
+
+.cuisine-card li {
+    padding: 0.3rem 0;
+    color: var(--medium-gray);
+}
+
+.live-counters {
+    padding: 80px 0;
+}
+
+.counters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.counter-card {
+    background: var(--white);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+}
+
+.counter-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+.counter-image {
+    height: 200px;
+    overflow: hidden;
+}
+
+.counter-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.counter-card:hover .counter-image img {
+    transform: scale(1.1);
+}
+
+.counter-content {
+    padding: 1.5rem;
+}
+
+.counter-content h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--primary-black);
+    margin-bottom: 0.5rem;
+}
+
+.catering-features {
+    background: var(--light-gray);
+    padding: 80px 0;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.feature-item {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.feature-icon i {
+    font-size: 2rem;
+    color: var(--primary-black);
+}
+
+.feature-item h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--primary-black);
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .cuisine-grid,
+    .counters-grid,
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
