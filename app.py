@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import os 
-from dotenv import load_dotenv
 from flask_migrate import Migrate
 import click
 from models import db, dish,Contact

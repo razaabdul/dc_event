@@ -20,7 +20,12 @@
                 <i class="fas fa-heart"></i>
                 DC  EVENT 
             </div>
-            <ul class="nav-menu">
+            <div class="nav-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            <ul class="nav-menu" id="nav-menu">
                 <li><a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' }}">Home</a></li>
                 <li><a href="{{ url_for('packages') }}" class="{{ 'active' if request.endpoint == 'packages' }}">Packages</a></li>
                 <li><a href="{{ url_for('services') }}" class="{{ 'active' if request.endpoint == 'services' }}">Services</a></li>
@@ -29,11 +34,7 @@
                 <li><a href="{{ url_for('calculator') }}" class="{{ 'active' if request.endpoint == 'calculator' }}">Calculate plate</a></li>
                 <li><a href="{{ url_for('contact') }}" class="{{ 'active' if request.endpoint == 'contact' }}">Contact</a></li>
             </ul>
-            <div class="nav-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+            
         </div>
     </nav>
 
@@ -94,5 +95,15 @@
     <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     {% block extra_js %}{% endblock %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const toggle = document.getElementById("mobile-menu");
+          const menu = document.getElementById("nav-menu");
+      
+          toggle.addEventListener("click", () => {
+            menu.classList.toggle("show");
+          });
+        });
+      </script>
 </body>
 </html>
