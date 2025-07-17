@@ -9,3 +9,4 @@ blinker==1.6.3
 Flask-Mail
 Flask-Migrate
 python-dotenv
+psycopg2-binary
