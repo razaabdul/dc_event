@@ -1,0 +1,20 @@
+<h2>Events Dashboard</h2>
+<a href="{{ url_for('add_event') }}">Add New Event</a>
+<hr>
+{% for event in events %}
+    <h3>{{ event.name }}</h3>
+    <p>{{ event.date }} | {{ event.location }} | Guests: {{ event.guests }}</p>
+    <p>{{ event.description }}</p>
+
+    {% if event.image %}
+       <video id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
+    <source src="{{ url_for('static', filename=event.image.replace('static/', '').replace('\\', '/')) }}" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+    {% endif %}
+
+    <br>
+    <a href="{{ url_for('edit_event', id=event.id) }}">Edit</a>
+    <a href="{{ url_for('delete_event', id=event.id) }}">Delete</a>
+    <hr>
+{% endfor %}

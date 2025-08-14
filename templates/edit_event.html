@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Event</title>
+</head>
+<body>
+
+<h2>Edit Event</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    <label>Event Name:</label>
+    <input type="text" name="name" value="{{ event.name }}" required><br><br>
+
+    <label>Date:</label>
+    <input type="date" name="date" value="{{ event.date }}" required><br><br>
+
+    <label>Location:</label>
+    <input type="text" name="location" value="{{ event.location }}" required><br><br>
+
+    <label>Guests:</label>
+    <input type="number" name="guests" value="{{ event.guests }}" required><br><br>
+
+    <label>Description:</label>
+    <textarea name="description">{{ event.description }}</textarea><br><br>
+
+    <label>Upload New Video:</label>
+    <input type="file" name="video" accept="video/*"><br><br>
+
+    {% if event.image %}
+        <p>Current Video:</p>
+      {% if event.image %}
+<video width="320" height="240" controls>
+    <source src="{{ url_for('static', filename=event.image) }}" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+{% endif %}
+        <br><br>
+    {% endif %}
+
+    <button type="submit">Update Event</button>
+</form>
+
+</body>
+</html>

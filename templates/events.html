@@ -21,13 +21,13 @@
         </div>
         
         <div class="events-grid">
-            {% for event in events %}
+            {% for event in all_evnt %}
             <div class="event-card">
                 <div class="event-image">
-                    <video id="video-{{ event.id }}" class="hero-video" muted loop>
-                        <source src="{{ url_for('static', filename='IMG_4356.MOV') }}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+               <video id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
+<source src="{{ url_for('static', filename=event.image) }}" type="video/mp4">    Your browser does not support the video tag.
+</video>
+
                     <!-- <img src="{{ event.image }}" > -->
                     <div class="event-overlay">
                         <div class="event-info">

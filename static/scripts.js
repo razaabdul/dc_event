@@ -123,6 +123,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   })
   
+document.addEventListener("DOMContentLoaded", function () {
+    const container = document.querySelector(".events-grid");
+    
+    // Clone cards to make the loop seamless
+    container.innerHTML += container.innerHTML;
+
+    let scrollSpeed = 1; // pixels per frame
+    function autoScroll() {
+        container.scrollLeft += scrollSpeed;
+        if (container.scrollLeft >= container.scrollWidth / 2) {
+            container.scrollLeft = 0; // reset when half scrolled (due to clone)
+        }
+        requestAnimationFrame(autoScroll);
+    }
+    autoScroll();
+});
+
+
+
   // Utility function for smooth scrolling to sections
   function scrollToSection(sectionId) {
     const section = document.getElementById(sectionId)
@@ -133,7 +152,114 @@ document.addEventListener("DOMContentLoaded", () => {
       })
     }
   }
-  
+  //  calculator 
+   document.addEventListener("DOMContentLoaded", function () {
+          const toggle = document.getElementById("mobile-menu");
+          const menu = document.getElementById("nav-menu");
+      
+          toggle.addEventListener("click", () => {
+            menu.classList.toggle("show");
+          });
+        });
+
+  // Store dish data from Flask template
+        const dishData = {
+            {% for dish in dishes %}
+            {{ dish.id }}: {
+                id: {{ dish.id }},
+                name: "{{ dish.name }}",
+                price: {{ dish.price }},
+                category: "{{ dish.category }}",
+                description: "{{ dish.description or '' }}",
+                quantity: 0
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        };
+
+        // Change guest count
+        function changeGuests(change) {
+            const guestInput = document.getElementById('guest-count');
+            let currentGuests = parseInt(guestInput.value) || 0;
+            let newGuests = Math.max(1, currentGuests + change);
+            guestInput.value = newGuests;
+            updateTotal();
+        }
+
+        // Change dish quantity
+        function changeDishQuantity(dishId, change) {
+            const dish = dishData[dishId];
+            if (!dish) return;
+
+            dish.quantity = Math.max(0, dish.quantity + change);
+            
+            // Update UI
+            document.getElementById(`qty-${dishId}`).textContent = dish.quantity;
+            document.getElementById(`total-${dishId}`).textContent = dish.price * dish.quantity;
+            
+            // Update minus button state
+            const minusBtn = document.querySelector(`[onclick="changeDishQuantity(${dishId}, -1)"]`);
+            minusBtn.disabled = dish.quantity <= 0;
+            
+            updateTotal();
+        }
+
+        // Update total calculations
+        function updateTotal() {
+            const guestCount = parseInt(document.getElementById('guest-count').value) || 0;
+            document.getElementById('guest-output').textContent = guestCount;
+
+            let perGuestTotal = 0;
+
+            // Calculate total from all dishes
+            Object.values(dishData).forEach(dish => {
+                perGuestTotal += dish.price * dish.quantity;
+            });
+
+            document.getElementById('per-guest-total').textContent = perGuestTotal;
+            document.getElementById('final-total').textContent = perGuestTotal * guestCount;
+        }
+
+        // Get quote function
+        function getQuote() {
+            const guestCount = parseInt(document.getElementById('guest-count').value) || 0;
+            const finalTotal = parseInt(document.getElementById('final-total').textContent) || 0;
+            
+            if (finalTotal === 0) {
+                alert('Please select some dishes to get a quote!');
+                return;
+            }
+
+            let selectedDishes = [];
+            Object.values(dishData).forEach(dish => {
+                if (dish.quantity > 0) {
+                    selectedDishes.push(`${dish.name} x${dish.quantity}`);
+                }
+            });
+
+            const message = `Quote Request:\n\nGuests: ${guestCount}\nSelected Dishes:\n${selectedDishes.join('\n')}\n\nTotal Amount: ₹${finalTotal}\n\nThank you for choosing Dream Creation!`;
+            
+            alert(message);
+            
+      
+        }
+
+        // Initialize the page
+        updateTotal();
+
+
+
+
+// auto play vedio 
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("video.hero-video").forEach(video => {
+        video.muted = true; // ensure mute
+        video.play().catch(err => {
+            console.warn("Autoplay blocked:", err);
+        });
+    });
+});
+
+
   // Package card interactions
   document.addEventListener("DOMContentLoaded", () => {
     const packageCards = document.querySelectorAll(".package-card")

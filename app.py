@@ -1,29 +1,35 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import os 
-from flask_migrate import Migrate
 import click
-from models import db, dish,Contact
+from models import db, dish,Contact,Event
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_mail import Mail
 from flask_mail import Message
+from dotenv import load_dotenv
+from werkzeug.utils import secure_filename
+from datetime import datetime
 
 # from flask_wtf import CSRFProtect
 
-app = Flask(__name__, static_folder='static')
-app.secret_key = 'your-secret-key-here'
-# csrf = CSRFProtect(app)
+load_dotenv()
 
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "fallback-secret")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL", "sqlite:///dishes.db")
+# Initialize Flask app
+app = Flask(__name__, static_folder='static')
+app.secret_key = os.getenv("SECRET_KEY", "fallback-secret")
+
+# Database config
+# Database config (Postgres)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+    "DATABASE_URL",  # Read from environment
+    "postgresql://postgres:postrges@localhost:5432/dcevent")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Bind SQLAlchemy to app
 db.init_app(app)
+
+# Flask-Migrate setup
 migrate = Migrate(app, db)
-
-def create_db():
-    """Create the database."""
-    db.create_all()
-    click.echo("Database created!")
-
 
 # Flask-Mail config
 app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
@@ -35,6 +41,17 @@ app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_DEFAULT_SENDER")
 
 mail = Mail(app)
 
+
+# Configure upload folder
+# Path relative to the app root
+UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads', 'videos')
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads', 'videos')
+
+ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mov', 'mkv'}
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 
@@ -73,6 +90,93 @@ def edit_dish(id):
     Dish.description = request.form['description']
     db.session.commit()
     return redirect(url_for('dish_dashboard'))
+
+
+# Add Event Page
+@app.route('/admin/events/add', methods=['GET', 'POST'])
+
+# need to update the video path
+def add_event():
+    if request.method == 'POST':
+        name = request.form['name']
+        date_str = request.form['date']
+        date = datetime.strptime(date_str, "%Y-%m-%d").date()
+
+        location = request.form['location']
+        guests = request.form['guests']
+        description = request.form.get('description')
+
+        video_file = request.files.get('video')
+        video_path = None
+
+        if video_file and allowed_file(video_file.filename):
+            filename = secure_filename(video_file.filename)
+
+            # Make sure folder exists
+            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+            # Absolute path for saving
+            save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            video_file.save(save_path)
+
+            # Store only relative path without "static/"
+            video_path = f"uploads/videos/{filename}"
+
+        e = Event(
+            name=name,
+            date=date,
+            location=location,
+            guests=guests,
+            image=video_path,  # store relative path only
+            description=description
+        )
+        db.session.add(e)
+        db.session.commit()
+        return redirect(url_for('events_dashboard'))
+
+    return render_template('add_event.html')
+
+# Edit Event
+@app.route('/admin/events/edit/<int:id>', methods=['GET', 'POST'])
+def edit_event(id):
+    e = Event.query.get_or_404(id)
+    if request.method == 'POST':
+        e.name = request.form['name']
+        e.date = request.form['date']
+        e.location = request.form['location']
+        e.guests = request.form['guests']
+        e.description = request.form.get('description')
+
+        video_file = request.files.get('video')
+        if video_file and allowed_file(video_file.filename):
+            filename = secure_filename(video_file.filename)
+            video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+            video_file.save(video_path)
+            e.image = video_path
+
+        db.session.commit()
+        return redirect(url_for('events_dashboard'))
+
+    return render_template('edit_event.html', event=e)
+
+# Delete Event
+@app.route('/admin/events/delete/<int:id>')
+def delete_event(id):
+    e = Event.query.get_or_404(id)
+    if e.image and os.path.exists(e.image):
+        os.remove(e.image)  # remove video from server
+    db.session.delete(e)
+    db.session.commit()
+    return redirect(url_for('events_dashboard'))
+
+# Show All Events
+@app.route('/admin/events')
+def events_dashboard():
+    events = Event.query.all()
+    return render_template('events_dashboard.html', events=events)
+
+
 
 
 @app.route('/calculator')
@@ -131,12 +235,12 @@ packages_data = [
 
 services_data = [
     {
-        'id': 1,
-        'name': 'Wedding Photography',
-        'icon': 'fas fa-camera',
-        'price': 'Starting from ₹25,000',
-        'description': 'Capture your special moments with our professional photography services.',
-        'features': ['Pre-wedding shoot', 'Wedding day coverage', 'Edited photos', 'Online gallery']
+        'id': 4,
+        'name': 'Entertainment',
+        'icon': 'fas fa-music',
+        'price': 'Starting from ₹20,000',
+        'description': 'Keep your guests entertained with our music and entertainment services.',
+        'features': ['Professional DJ', 'Live band options', 'Sound system', 'Dance floor setup']
     },
     {
         'id': 2,
@@ -155,45 +259,47 @@ services_data = [
         'features': ['Multi-cuisine options', 'Live counters', 'Professional service', 'Custom menus']
     },
     {
-        'id': 4,
-        'name': 'Entertainment',
-        'icon': 'fas fa-music',
-        'price': 'Starting from ₹20,000',
-        'description': 'Keep your guests entertained with our music and entertainment services.',
-        'features': ['Professional DJ', 'Live band options', 'Sound system', 'Dance floor setup']
+       
+
+         'id': 4,
+        'name': 'Wedding Photography',
+        'icon': 'fas fa-camera',
+        'price': 'Starting from ₹25,000',
+        'description': 'Capture your special moments with our professional photography services.',
+        'features': ['Pre-wedding shoot', 'Wedding day coverage', 'Edited photos', 'Online gallery']
     }
 ]
 
-events_data = [
-    {
-        'id': 1,
-        'name': 'Royal Palace Wedding',
-        'date': '2024-02-15',
-        'location': 'Mumbai',
-        'guests': 300,
-        # 'image': '/placeholder.svg?height=250&width=350',
-        'image': 'static/WhatsApp Video 2025-07-13 at 4.34.09 PM.mp4',
-        'description': 'A grand celebration at the Royal Palace with traditional decorations and premium catering.'
-    },
-    {
-        'id': 2,
-        'name': 'Beach Wedding Ceremony',
-        'date': '2024-03-20',
-        'location': 'Goa',
-        'guests': 150,
-        'image': '/placeholder.svg?height=250&width=350',
-        'description': 'A beautiful beachside wedding with sunset views and coastal cuisine.'
-    },
-    {
-        'id': 3,
-        'name': 'Garden Wedding',
-        'date': '2024-04-10',
-        'location': 'Delhi',
-        'guests': 200,
-        'image': '/placeholder.svg?height=250&width=350',
-        'description': 'An elegant garden wedding with floral themes and outdoor dining.'
-    }
-]
+# events_data = [
+#     {
+#         'id': 1,
+#         'name': 'Royal Palace Wedding',
+#         'date': '2024-02-15',
+#         'location': 'Mumbai',
+#         'guests': 300,
+#         # 'image': '/placeholder.svg?height=250&width=350',
+#         'image': 'static/WhatsApp Video 2025-07-13 at 4.34.09 PM.mp4',
+#         'description': 'A grand celebration at the Royal Palace with traditional decorations and premium catering.'
+#     },
+#     {
+#         'id': 2,
+#         'name': 'Beach Wedding Ceremony',
+#         'date': '2024-03-20',
+#         'location': 'Goa',
+#         'guests': 150,
+#         'image': '/placeholder.svg?height=250&width=350',
+#         'description': 'A beautiful beachside wedding with sunset views and coastal cuisine.'
+#     },
+#     {
+#         'id': 3,
+#         'name': 'Garden Wedding',
+#         'date': '2024-04-10',
+#         'location': 'Delhi',
+#         'guests': 200,
+#         'image': '/placeholder.svg?height=250&width=350',
+#         'description': 'An elegant garden wedding with floral themes and outdoor dining.'
+#     }
+# ]
 
 dishes_data = {
     'appetizers': [
@@ -220,7 +326,8 @@ dishes_data = {
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    all_events = Event.query.all()
+    return render_template('index.html',events=all_events)
 
 @app.route('/packages')
 def packages():
@@ -232,7 +339,8 @@ def services():
 
 @app.route('/events')
 def events():
-    return render_template('events.html', events=events_data)
+    q=Event.query.all()
+    return render_template('events.html', all_evnt=q)
 
 @app.route('/dishes')
 def dishes():
@@ -246,7 +354,8 @@ def contact():
         email = request.form.get('email')
         phone = request.form.get('phone')
         message_text = request.form.get('message')
-        event_date = request.form.get('event_date')
+        event_date_str = request.form.get('event_date')
+        event_date = datetime.strptime(event_date_str, "%Y-%m-%d").date()
         service = request.form.get('service')
         budget = request.form.get('budget')
 
@@ -258,7 +367,7 @@ def contact():
 
         # Send Email
         msg = Message(subject="New Contact Form Submission",
-                    recipients=["razalatitude@gmail.com"],  # <-- Replace with your receiver
+                    recipients=["dreamcreation2580@gmail.com"],  # <-- Replace with your receiver
                     body=f"""
         New Contact Message:
         Name: {name}

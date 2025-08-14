@@ -6,6 +6,17 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
+
+
+class Event(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    location = db.Column(db.String(200), nullable=False)
+    guests = db.Column(db.Integer, nullable=False)
+    image = db.Column(db.String(500), nullable=True)  # this is for both image and vedio 
+    description = db.Column(db.Text, nullable=True)
+
 class dish(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
