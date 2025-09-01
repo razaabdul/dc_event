@@ -396,7 +396,7 @@ def catering_page():
 @app.route('/')
 def home():
     all_events = Event.query.all()
-    dd = Event.query.all()
+    dd = dish.query.all()
     return render_template('index.html',events=all_events,d=dd)
 @app.route('/about')
 def aboutus():

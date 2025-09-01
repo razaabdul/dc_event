@@ -285,18 +285,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
   
-// (function () {
-//       const cards = document.querySelectorAll('.dish-card');
-//       const io = new IntersectionObserver((entries) => {
-//         entries.forEach(entry => {
-//           if (entry.isIntersecting) {
-//             entry.target.classList.add('in-view');
-//             io.unobserve(entry.target);
-//           }
-//         });
-//       }, { threshold: 0.12 });
-//       cards.forEach(c => io.observe(c));
-//     })();
-
-
+ // Simple reveal on scroll
+    (function () {
+      const cards = document.querySelectorAll('.dish-card');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      cards.forEach(c => io.observe(c));
+    })();
   

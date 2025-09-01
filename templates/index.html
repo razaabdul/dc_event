@@ -106,7 +106,7 @@
 </section>
 
 
-  <header class="cs-rtl-header">
+<header class="cs-rtl-header">
     <p class="cs-rtl-overline">Signature Dishes</p>
     <h2 class="cs-rtl-title text-balance">Catering & Cuisine</h2>
     <p class="cs-rtl-subtitle">Chef-curated plates crafted for memorable celebrations</p>
@@ -114,14 +114,20 @@
   </header>
 
 
-<div class="cs-rtl-scroller-viewport">
+
+  
+  <div class="cs-rtl-scroller-viewport">
     <ul class="cs-rtl-track">
       {% for dish in d %}
       <li class="cs-rtl-item">
         <article class="cs-card" aria-labelledby="dish-{{ dish.id }}">
           <div class="cs-media">
-            <img src="{{ url_for('static', filename=dish.image) }}" alt="{{ dish.name }} - {{ dish.cuisine }} cuisine" loading="lazy" />
-          <span class="cuisine-badge">{{ dish.cuisine }}</span>
+              <img
+          src="{{ url_for('static', filename='images/' + dish.image) if not dish.image.startswith('http') else dish.image }}"
+          alt="{{ dish.name }} — {{ dish.cuisine }}"
+          loading="lazy"
+          onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/images/placeholder-4by3.jpg') }}';"
+        />
             <span class="cs-badge">{{ dish.cuisine }}</span>
             <span class="cs-dot {{ 'veg' if dish.veg else 'nonveg' }}" title="{{ 'Vegetarian' if dish.veg else 'Non-Vegetarian' }}"></span>
             <div class="cs-fade" aria-hidden="true"></div>
@@ -135,8 +141,7 @@
       </li>
       {% endfor %}
 
-       duplicate for seamless loop 
-      {% for dish in dishes %}
+      {% for dish in d %}
       <li class="cs-rtl-item" aria-hidden="true">
         <article class="cs-card">
           <div class="cs-media">
@@ -159,7 +164,7 @@
       </li>
       {% endfor %}
     </ul>
-  </div>
+  </div>  
 
 
 
