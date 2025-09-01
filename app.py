@@ -22,7 +22,7 @@ app.secret_key = os.getenv("SECRET_KEY", "fallback-secret")
 # Database config (Postgres)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
     "DATABASE_URL",  # Read from environment
-    "postgresql://postgres:postrges@localhost:5432/dcevent")
+    "postgresql://postgres:newpassword@localhost:5432/dcevent")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Bind SQLAlchemy to app
@@ -65,14 +65,42 @@ def dish_dashboard():
 @app.route('/admin/dishes/add', methods=['POST'])
 def add_dish():
     name = request.form['name']
-    category = request.form['category']
+    cuisine = request.form['cuisine']
+    veg = request.form.get('veg') == 'on'
     price = request.form['price']
     description = request.form['description']
 
-    d = dish(name=name, category=category, price=price, description=description)
+    image_file = request.files.get('image')
+    image_path = None
+
+    if image_file and image_file.filename != '':
+        # Save to static/uploads/images/
+        image_folder = os.path.join(app.root_path, 'static', 'uploads', 'images')
+        os.makedirs(image_folder, exist_ok=True)
+        filename = secure_filename(image_file.filename)
+        save_path = os.path.join(image_folder, filename)
+        image_file.save(save_path)
+        # Store relative path for use in templates
+        image_path = f"uploads/images/{filename}"
+
+    d = dish(
+        name=name,
+        cuisine=cuisine,
+        veg=veg,
+        price=price,
+        image=image_path,
+        description=description
+    )
     db.session.add(d)
     db.session.commit()
     return redirect(url_for('dish_dashboard'))
+
+
+@app.route('/dishes')
+def catering():
+    DD = dish.query.all()
+    return render_template('catering.html',dishes=DD)
+
 
 @app.route('/admin/dishes/delete/<int:id>')
 def delete_dish(id):
@@ -80,6 +108,7 @@ def delete_dish(id):
     d.session.delete(d)
     d.session.commit()
     return redirect(url_for('dish_dashboard'))
+
 
 @app.route('/admin/dishes/edit/<int:id>', methods=['POST'])
 def edit_dish(id):
@@ -301,6 +330,16 @@ services_data = [
 #     }
 # ]
 
+
+# Define the filter
+def imgsrc_filter(path):
+    # You can modify this logic as needed
+    return f"/static/images/{path}"
+
+# Register it
+app.jinja_env.filters['imgsrc'] = imgsrc_filter
+
+
 dishes_data = {
     'appetizers': [
         {'name': 'Paneer Tikka', 'price': '₹300', 'veg': True},
@@ -324,10 +363,44 @@ dishes_data = {
     ]
 }
 
+
+
+# In-memory sample data (replace with DB later if needed)
+DISHES = [
+    {"id": 1, "name": "Paneer Tikka", "cuisine": "Indian", "veg": True,  "price": 180, "image": "dc_event/static/Screenshot 2025-08-12 124022.png", "description": "Smoky cottage cheese cubes marinated in aromatic spices."},
+    {"id": 2, "name": "Herb Grilled Chicken", "cuisine": "Continental", "veg": False, "price": 260, "image": "images/dishes/grilled-chicken.jpg", "description": "Juicy chicken with herbs, served with sautéed vegetables."},
+    {"id": 3, "name": "Gulab Jamun", "cuisine": "Desserts", "veg": True,  "price": 120, "image": "images/dishes/gulab-jamun.jpg", "description": "Milk-solid dumplings in saffron sugar syrup."},
+    {"id": 4, "name": "Veg Hakka Noodles", "cuisine": "Chinese", "veg": True,  "price": 150, "image": "images/dishes/veg-hakka-noodles.jpg", "description": "Stir-fried noodles with crisp veggies and savory sauces."},
+    {"id": 5, "name": "Cold Coffee", "cuisine": "Beverages", "veg": True,  "price": 90,  "image": "images/dishes/cold-coffee.jpg", "description": "Chilled creamy coffee with ice."},
+    {"id": 6, "name": "Butter Chicken", "cuisine": "Indian", "veg": False, "price": 280, "image": "images/dishes/butter-chicken.jpg", "description": "Creamy tomato-based chicken curry."},
+    {"id": 7, "name": "Tiramisu", "cuisine": "Desserts", "veg": True,  "price": 200, "image": "images/dishes/tiramisu.jpg", "description": "Classic coffee-flavored Italian dessert."},
+    {"id": 8, "name": "Garlic Bread", "cuisine": "Continental", "veg": True,  "price": 110, "image": "images/dishes/garlic-bread.jpg", "description": "Toasted bread with garlic butter and herbs."},
+    {"id": 9, "name": "Veg Manchurian", "cuisine": "Chinese", "veg": True,  "price": 170, "image": "images/dishes/manchurian.jpg", "description": "Crispy veggie balls in tangy Manchurian sauce."},
+    {"id": 10, "name": "Fresh Lime Soda", "cuisine": "Beverages", "veg": True,  "price": 80,  "image": "images/dishes/fresh-lime-soda.jpg", "description": "Refreshing sweet and salty lime soda."},
+]
+
+
+
+@app.get("/api/dishes")
+def api_dishes():
+    # Simple: return all dishes, no filters/CRUD
+    return jsonify(DISHES)
+
+@app.get("/catering")
+def catering_page():
+    # Render a page that shows all dishes using a simple attractive grid
+    return render_template("catering.html", dishes=DISHES)
+
+
+
 @app.route('/')
 def home():
     all_events = Event.query.all()
-    return render_template('index.html',events=all_events)
+    dd = Event.query.all()
+    return render_template('index.html',events=all_events,d=dd)
+@app.route('/about')
+def aboutus():
+    return render_template('about.html')
 
 @app.route('/packages')
 def packages():
@@ -385,4 +458,4 @@ def contact():
     return render_template("contact.html")
 
 if __name__ == '__main__':
-    app.run(debug=True,port=5002)
+    app.run(debug=True,port=5000)

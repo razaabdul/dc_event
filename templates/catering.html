@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Catering & Cuisine</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+
+    /* Color system (5 colors) */
+    :root{
+      --cs-brand:#059669; /* emerald */
+      --cs-accent:#f59e0b; /* amber */
+      --cs-bg:#ffffff;
+      --cs-ink:#0f172a; /* slate-900 */
+      --cs-muted:#64748b; /* slate-500 */
+      --cs-ring:#e2e8f0; /* slate-200 */
+    }
+
+    .cs-rtl-scroller{ padding:3.5rem 1rem; background:var(--cs-bg); color:var(--cs-ink); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
+    .cs-rtl-header{ text-align:center; max-width:1120px; margin:0 auto 1.25rem; }
+    .cs-rtl-overline{ font-size:.75rem; text-transform:uppercase; letter-spacing:.08em; font-weight:700; color:var(--cs-brand); margin:0 0 .25rem; }
+    .cs-rtl-title{ font-family:"Playfair Display",Georgia,serif; font-weight:700; margin:0; font-size:clamp(1.6rem,1.1rem + 2vw,2.25rem); line-height:1.2; }
+    .cs-rtl-subtitle{ margin:.5rem auto 0; color:var(--cs-muted); max-width:48ch; line-height:1.55; }
+    .cs-rtl-divider{ width:80px; height:3px; border-radius:999px; background:var(--cs-brand); margin:1rem auto 0; }
+
+    /* Viewport */
+    .cs-rtl-scroller-viewport{
+      max-width:1120px; margin:1.25rem auto 0; overflow:hidden; position:relative;
+    }
+
+    /* Track: right-to-left scrolling */
+    .cs-rtl-track{
+      --gap:1rem;
+      --duration: 45s;      /* adjust for speed */
+      display:flex; gap:var(--gap);
+      width:max-content;
+      list-style:none; padding:0; margin:0;
+      animation: cs-scroll var(--duration) linear infinite;
+    }
+    @keyframes cs-scroll{
+      from{ transform: translateX(0); }
+      to{ transform: translateX(calc(-50% - var(--gap)/2)); } /* move half the content width */
+    }
+    /* Pause on hover and for reduced motion */
+    .cs-rtl-scroller-viewport:hover .cs-rtl-track{ animation-play-state: paused; }
+    @media (prefers-reduced-motion: reduce){
+      .cs-rtl-track{ animation: none; }
+    }
+
+    /* Items / Cards */
+    .cs-rtl-item{ flex:0 0 auto; width:280px; }
+    @media (min-width:768px){ .cs-rtl-item{ width:320px; } }
+
+    .cs-card{
+      background:#fff; border:1px solid var(--cs-ring); border-radius:16px; overflow:hidden;
+      box-shadow:0 8px 22px rgba(15,23,42,.06);
+      transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+    .cs-card:hover{ transform: translateY(-4px); box-shadow: 0 12px 28px rgba(15,23,42,.1); }
+
+    .cs-media{ position:relative; aspect-ratio:4/3; overflow:hidden; }
+    .cs-media img{ width:100%; height:100%; object-fit:cover; display:block; transition: transform .55s ease; }
+    .cs-card:hover .cs-media img{ transform: scale(1.06); }
+    .cs-fade{ position:absolute; inset:0; background: linear-gradient(to top, rgba(0,0,0,.35), rgba(0,0,0,0)); pointer-events:none; opacity:0; transition:opacity .35s ease; }
+    .cs-card:hover .cs-fade{ opacity:1; }
+
+    .cs-badge{
+      position:absolute; left:.75rem; bottom:.75rem; background:var(--cs-accent); color:#111; font-size:.75rem; font-weight:700;
+      padding:.28rem .5rem; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,.15);
+    }
+    .cs-dot{ position:absolute; right:.75rem; top:.75rem; width:10px; height:10px; border-radius:9999px; box-shadow:0 0 0 2px #fff; }
+    .cs-dot.veg{ background:#22c55e; } .cs-dot.nonveg{ background:#ef4444; }
+
+    .cs-body{ padding:1rem; }
+    .cs-name{ font-family:"Playfair Display",Georgia,serif; font-weight:700; margin:0 0 .4rem; font-size:1.06rem; letter-spacing:.1px; }
+    .cs-desc{ margin:0 0 .85rem; color:var(--cs-muted); font-size:.94rem; line-height:1.55; }
+    .cs-price{ font-weight:700; color:var(--cs-ink); }
+
+    /* Optional dark scheme */
+    @media (prefers-color-scheme: dark){
+      .cs-rtl-scroller{ background:#0b1220; color:#f8fafc; }
+      .cs-rtl-subtitle{ color:#cbd5e1; }
+      .cs-card{ background:#0f172a; border-color:#1f2937; box-shadow:0 8px 22px rgba(0,0,0,.25); }
+      .cs-price{ color:#f8fafc; }
+    }
+    /* :root {
+      --brand: #111827; /* near-black */
+      --accent: #0ea5e9; /* cyan-blue accent */
+      --bg: #ffffff;
+      --muted: #6b7280;
+      --ring: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--bg); color: var(--brand); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+    .section-header { text-align: center; margin-bottom: 1.5rem; }
+    .section-header h2 { font-size: 2rem; margin: 0 0 .25rem; line-height: 1.2; }
+    .section-header p { margin: 0; color: var(--muted); }
+    .section-divider { width: 72px; height: 3px; background: var(--accent); border-radius: 999px; margin: 1rem auto 0; }
+
+    .dishes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .dish-card {
+      background: #fff; border: 1px solid var(--ring); border-radius: 14px; overflow: hidden;
+      box-shadow: 0 8px 22px rgba(17,24,39,0.06); transition: transform .25s ease, box-shadow .25s ease;
+      opacity: 0; transform: translateY(10px);
+    }
+    .dish-card.in-view { opacity: 1; transform: translateY(0); transition: opacity .45s ease, transform .45s ease; }
+    .dish-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(17,24,39,0.1); }
+    .dish-media { position: relative; aspect-ratio: 4/3; overflow: hidden; }
+    .dish-media img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .55s ease; }
+    .dish-card:hover .dish-media img { transform: scale(1.06); }
+    .cuisine-badge {
+      position: absolute; left: .75rem; bottom: .75rem; background: rgba(17,24,39,.85); color: #fff;
+      font-size: .75rem; padding: .25rem .5rem; border-radius: 6px;
+    }
+    .diet-dot { position: absolute; right: .75rem; top: .75rem; width: 10px; height: 10px; border-radius: 9999px; box-shadow: 0 0 0 2px #fff; }
+    .diet-dot.veg { background: #22c55e; }
+    .diet-dot.nonveg { background: #ef4444; }
+    .dish-body { padding: .9rem .95rem 1rem; }
+    .dish-title { margin: 0 0 .35rem; font-size: 1.05rem; }
+    .dish-desc { margin: 0 0 .75rem; color: var(--muted); font-size: .92rem; line-height: 1.5; }
+    .dish-meta { display: flex; align-items: center; justify-content: space-between; }
+    .price { font-weight: 700; } */
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="section-header">
+      <h2 class="text-balance">Catering & Cuisine</h2>
+      <p>Explore our signature dishes curated by expert chefs</p>
+      <div class="section-divider"></div>
+    </div>
+
+    <section class="dishes-grid" aria-label="All dishes">
+      {% for dish in dishes %}
+      <article class="dish-card" aria-labelledby="dish-{{ dish.id }}">
+        <div class="dish-media">
+          <img src="{{ url_for('static', filename=dish.image) }}" alt="{{ dish.name }} - {{ dish.cuisine }} cuisine" loading="lazy" />
+          <span class="cuisine-badge">{{ dish.cuisine }}</span>
+          <span class="diet-dot {{ 'veg' if dish.veg else 'nonveg' }}" title="{{ 'Vegetarian' if dish.veg else 'Non-Vegetarian' }}"></span>
+        </div>
+        <div class="dish-body">
+          <h3 id="dish-{{ dish.id }}" class="dish-title">{{ dish.name }}</h3>
+          {% if dish.description %}<p class="dish-desc">{{ dish.description }}</p>{% endif %}
+          <div class="dish-meta">
+            {% if dish.price %}<span class="price">₹{{ dish.price }}</span>{% endif %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </section>
+  </main>
+
+
+  <section class="cs-rtl-scroller" aria-label="Signature dishes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <header class="cs-rtl-header">
+    <p class="cs-rtl-overline">Signature Dishes</p>
+    <h2 class="cs-rtl-title text-balance">Catering & Cuisine</h2>
+    <p class="cs-rtl-subtitle">Chef-curated plates crafted for memorable celebrations</p>
+    <div class="cs-rtl-divider" aria-hidden="true"></div>
+  </header>
+
+   <!-- Scroller  -->
+  <div class="cs-rtl-scroller-viewport">
+    <ul class="cs-rtl-track">
+      {% for dish in dishes %}
+      <li class="cs-rtl-item">
+        <article class="cs-card" aria-labelledby="dish-{{ dish.id }}">
+          <div class="cs-media">
+            <img
+              src="{{ dish.image}}"
+              alt="{{ dish.name }} — {{ dish.cuisine }}"
+              loading="lazy"
+              onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/placeholder-4by3.jpg') }}';"
+            />
+            <span class="cs-badge">{{ dish.cuisine }}</span>
+            <span class="cs-dot {{ 'veg' if dish.veg else 'nonveg' }}" title="{{ 'Vegetarian' if dish.veg else 'Non-Vegetarian' }}"></span>
+            <div class="cs-fade" aria-hidden="true"></div>
+          </div>
+          <div class="cs-body">
+            <h3 id="dish-{{ dish.id }}" class="cs-name">{{ dish.name }}</h3>
+            {% if dish.description %}<p class="cs-desc">{{ dish.description }}</p>{% endif %}
+            {% if dish.price %}<span class="cs-price">₹{{ dish.price }}</span>{% endif %}
+          </div>
+        </article>
+      </li>
+      {% endfor %}
+
+       <!-- duplicate for seamless loop  -->
+      {% for dish in dishes %}
+      <li class="cs-rtl-item" aria-hidden="true">
+        <article class="cs-card">
+          <div class="cs-media">
+            <img
+              src="{{ dish.image | imgsrc }}"
+              alt=""
+              loading="lazy"
+              onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/placeholder-4by3.jpg') }}';"
+            />
+            <span class="cs-badge">{{ dish.cuisine }}</span>
+            <span class="cs-dot {{ 'veg' if dish.veg else 'nonveg' }}"></span>
+            <div class="cs-fade" aria-hidden="true"></div>
+          </div>
+          <div class="cs-body">
+            <h3 class="cs-name">{{ dish.name }}</h3>
+            {% if dish.description %}<p class="cs-desc">{{ dish.description }}</p>{% endif %}
+            {% if dish.price %}<span class="cs-price">₹{{ dish.price }}</span>{% endif %}
+          </div>
+        </article>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <script>
+    // Simple reveal on scroll
+    (function () {
+      const cards = document.querySelectorAll('.dish-card');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      cards.forEach(c => io.observe(c));
+    })();
+  </script>
+</body>
+</html>

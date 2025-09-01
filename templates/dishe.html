@@ -25,22 +25,44 @@
 <body>
     <h1>Dish Management Dashboard</h1>
 
-    <form method="POST" action="{{ url_for('add_dish') }}">
-        <h3>Add New Dish</h3>
-        <input type="text" name="name" placeholder="Dish Name" required>
-        <!-- <input type="text" name="category" placeholder="Category (Appetizer/Main/Dessert)" required>
-          -->
-          <select name="category" required>
-            <option value="">-- Select Category --</option>
-            <option value="Appetizer">Appetizer</option>
-            <option value="Main Course">Main Course</option>
-            <option value="Dessert">Dessert</option>
-          </select>
+    <form method="POST" action="{{ url_for('add_dish') }}" enctype="multipart/form-data">
+    <h3>Add New Dish</h3>
+    
+    <!-- Dish Name -->
+    <input type="text" name="name" placeholder="Dish Name" required>
+    
+    <!-- Cuisine -->
+    <input type="text" name="cuisine" placeholder="Cuisine (e.g. Indian, Chinese)" required>
+    
+    <!-- Veg/Non-Veg -->
+    <label>
+        <input type="radio" name="veg" value="True" checked> Veg
+    </label>
+    <label>
+        <input type="radio" name="veg" value="False"> Non-Veg
+    </label>
+    
+    <!-- Category (optional, if you keep it) -->
+    <select name="category">
+        <option value="">-- Select Category --</option>
+        <option value="Appetizer">Appetizer</option>
+        <option value="Main Course">Main Course</option>
+        <option value="Dessert">Dessert</option>
+    </select>
           
-        <input type="number" name="price" placeholder="Price (₹)" required>
-        <textarea name="description" placeholder="Description"></textarea>
-        <button type="submit">Add Dish</button>
-    </form>
+    <!-- Price -->
+    <input type="number" name="price" placeholder="Price (₹)" required>
+    
+    <!-- Image Upload -->
+    <input type="file" name="image" accept="image/*">
+    
+    <!-- Description -->
+    <textarea name="description" placeholder="Description"></textarea>
+    
+    <!-- Submit -->
+    <button type="submit">Add Dish</button>
+</form>
+
 
     <hr>
 

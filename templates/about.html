@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - Dream Creation{% endblock %}
+
+{% block content %}
+<!-- Page Header
+<section class="page-header">
+  <div class="container">
+    <h1>About Us</h1>
+    <p>Crafting unforgettable weddings with heart, precision, and style</p>
+  </div>
+</section> -->
+
+<!-- About Section (keeps the same two-column layout/classes for identical design) -->
+<section class="contact-section">
+  <div class="container">
+    <div class="contact-content">
+      <!-- Left: Story / Who We Are -->
+      <div class="contact-left">
+        <h2>Who We Are</h2>
+        <p>
+          We’re a full-service wedding & event planning studio dedicated to turning your
+          once-in-a-lifetime moments into timeless memories. From intimate ceremonies to
+          grand celebrations, our team blends creativity with meticulous execution.
+        </p>
+        <p>
+          With a trusted network of venues and vendors across India, we manage every detail—
+          concepts, décor, logistics, hospitality, entertainment, and guest experience—so you can be fully present.
+        </p>
+
+        <div class="contact-info">
+          <div class="contact-item">
+            <i class="fas fa-birthday-cake"></i>
+            <div>
+              <h4>Experience</h4>
+              <span>250+ weddings planned</span>
+              <span>8+ years in the industry</span>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <i class="fas fa-map-marked-alt"></i>
+            <div>
+              <h4>Destinations</h4>
+              <span>Pan-India & international</span>
+              <span>Beach, palace & luxury resorts</span>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <i class="fas fa-hand-holding-heart"></i>
+            <div>
+              <h4>Our Promise</h4>
+              <span>Personalized planning</span>
+              <span>End-to-end coordination</span>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <i class="fas fa-award"></i>
+            <div>
+              <h4>What Clients Say</h4>
+              <span>“Seamless, stylish & stress-free.”</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Highlights / Cards (reuses .contact-form box styling) -->
+      <div class="contact-form">
+        <h3>What Sets Us Apart</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Design Philosophy</label>
+            <p>
+              Elegant, meaningful design rooted in your story—colors, florals, and
+              textures curated to feel uniquely you.
+            </p>
+          </div>
+          <div class="form-group">
+            <label>Planning Approach</label>
+            <p>
+              Transparent timelines, detailed checklists, dedicated planners, and a
+              single point of contact from day one.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Vendor Network</label>
+            <p>
+              Verified partners for décor, catering, photo-video, entertainment,
+              hospitality & logistics at negotiated rates.
+            </p>
+          </div>
+          <div class="form-group">
+            <label>Guest Experience</label>
+            <p>
+              Travel & stay coordination, welcome hampers, itineraries, concierge
+              desk, and on-ground management.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Our Services</label>
+          <ul style="margin:0; padding-left:18px; line-height:1.7;">
+            <li>Complete Wedding Planning & Production</li>
+            <li>Design & Décor Styling</li>
+            <li>Hospitality & Logistics Management</li>
+            <li>Photography & Videography Coordination</li>
+            <li>Entertainment & Artist Management</li>
+            <li>Destination & Palace Weddings</li>
+          </ul>
+        </div>
+
+        <a href="/contact" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
+          <i class="fas fa-paper-plane"></i>
+          Plan With Us
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Values / Stats Section (optional, same visual language as FAQ header) -->
+<!-- Enhanced FAQ Section -->
+<section class="faq-section" style="padding: 80px 0; background: linear-gradient(135deg, #fafafa 0%, #f3f3f3 100%);">
+  <div class="container">
+    <!-- Header -->
+    <div class="section-header" style="text-align:center; margin-bottom:50px;">
+      <h2 style="font-size: 36px; font-weight:700; margin-bottom:15px;">Frequently Asked Questions</h2>
+      <p style="font-size:18px; color:#666;">Get quick answers to common queries about our services</p>
+      <div class="section-divider" style="width:60px;height:4px;background:#c59d5f;margin:25px auto;border-radius:2px;"></div>
+    </div>
+
+    <!-- FAQ Grid -->
+    <div class="faq-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:30px;">
+      
+      <!-- FAQ Item -->
+      <div class="faq-item" style="background:#fff;border-radius:16px;padding:25px;box-shadow:0 5px 15px rgba(0,0,0,0.08);transition:all 0.3s ease;">
+        <div class="faq-question" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <h3 style="font-size:20px;margin:0;font-weight:600;color:#333;">How far in advance should I book?</h3>
+          <i class="fas fa-chevron-down" style="transition:transform 0.3s ease;"></i>
+        </div>
+        <div class="faq-answer" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease;">
+          <p style="margin-top:15px;font-size:16px;color:#555;line-height:1.6;">
+            We recommend booking our services 6–12 months ahead for peak seasons, but we also handle last-minute events depending on availability.
+          </p>
+        </div>
+      </div>
+
+      <!-- Duplicate the item structure for each FAQ -->
+      <div class="faq-item" style="background:#fff;border-radius:16px;padding:25px;box-shadow:0 5px 15px rgba(0,0,0,0.08);transition:all 0.3s ease;">
+        <div class="faq-question" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <h3 style="font-size:20px;margin:0;font-weight:600;color:#333;">Do you provide destination weddings?</h3>
+          <i class="fas fa-chevron-down" style="transition:transform 0.3s ease;"></i>
+        </div>
+        <div class="faq-answer" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease;">
+          <p style="margin-top:15px;font-size:16px;color:#555;line-height:1.6;">
+            Yes, we offer full planning services across India and internationally with complete logistics and hospitality support.
+          </p>
+        </div>
+      </div>
+
+      <!-- Add more FAQ items here with the same structure -->
+      
+    </div>
+  </div>
+</section>
+
+<!-- Add JS for toggle behavior -->
+<script>
+document.querySelectorAll('.faq-question').forEach(q => {
+  q.addEventListener('click', () => {
+    const parent = q.parentElement;
+    const answer = parent.querySelector('.faq-answer');
+    const icon = q.querySelector('i');
+    const isOpen = answer.style.maxHeight && answer.style.maxHeight !== "0px";
+    
+    // Close all other FAQs first
+    document.querySelectorAll('.faq-answer').forEach(a => a.style.maxHeight = '0');
+    document.querySelectorAll('.faq-question i').forEach(i => i.style.transform = 'rotate(0deg)');
+    
+    if (!isOpen) {
+      answer.style.maxHeight = answer.scrollHeight + "px";
+      icon.style.transform = 'rotate(180deg)';
+    }
+  });
+});
+</script>
+
+{% endblock %}

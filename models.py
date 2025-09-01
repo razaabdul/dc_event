@@ -18,13 +18,19 @@ class Event(db.Model):
     description = db.Column(db.Text, nullable=True)
 
 class dish(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(100), nullable=False)
+#     category = db.Column(db.String(50), nullable=False)     
+#     price = db.Column(db.Integer, nullable=False)
+#     description = db.Column(db.String(255), nullable=True)
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    category = db.Column(db.String(50), nullable=False)     
+    cuisine = db.Column(db.String(50), nullable=False)       # Added
+    veg = db.Column(db.Boolean, nullable=False, default=True) # Added
     price = db.Column(db.Integer, nullable=False)
+    image = db.Column(db.String(255), nullable=True)          # Added
     description = db.Column(db.String(255), nullable=True)
-
-
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
