@@ -7,8 +7,8 @@
     <p>{{ event.description }}</p>
 
     {% if event.image %}
-       <video id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
-    <source src="{{ url_for('static', filename=event.image.replace('static/', '').replace('\\', '/')) }}" type="video/mp4">
+       <video style="width: 100; height: 100;" id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
+    <source  src="{{ url_for('static', filename=event.image.replace('static/', '').replace('\\', '/')) }}" type="video/mp4">
     Your browser does not support the video tag.
 </video>
     {% endif %}

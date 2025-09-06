@@ -1,3 +1,9 @@
+flask
+flask_sqlalchemy
+flask_mail
+python-dotenv
+flask_migrate
+psycopg2
 attrs==23.2.0
 Babel==2.10.3
 bcc==0.29.1

@@ -22,7 +22,7 @@ app.secret_key = os.getenv("SECRET_KEY", "fallback-secret")
 # Database config (Postgres)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
     "DATABASE_URL",  # Read from environment
-    "postgresql://postgres:newpassword@localhost:5432/dcevent")
+    "postgresql://postgres:postgres@localhost:5432/dcevent")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Bind SQLAlchemy to app
@@ -81,7 +81,7 @@ def add_dish():
         save_path = os.path.join(image_folder, filename)
         image_file.save(save_path)
         # Store relative path for use in templates
-        image_path = f"uploads/images/{filename}"
+        image_path =filename    
 
     d = dish(
         name=name,
@@ -96,29 +96,46 @@ def add_dish():
     return redirect(url_for('dish_dashboard'))
 
 
+
 @app.route('/dishes')
 def catering():
     DD = dish.query.all()
     return render_template('catering.html',dishes=DD)
 
 
-@app.route('/admin/dishes/delete/<int:id>')
-def delete_dish(id):
-    d = dish.query.get_or_404(id)
-    d.session.delete(d)
-    d.session.commit()
-    return redirect(url_for('dish_dashboard'))
-
-
-@app.route('/admin/dishes/edit/<int:id>', methods=['POST'])
-def edit_dish(id):
-    Dish = dish.query.get_or_404(id)
-    Dish.name = request.form['name']
-    Dish.category = request.form['category']
-    Dish.price = request.form['price']
-    Dish.description = request.form['description']
+@app.route('/admin/dishes/delete/<int:dish_id>', methods=['POST'])
+def delete_dish(dish_id):
+    d = dish.query.get_or_404(dish_id)
+    db.session.delete(d)
     db.session.commit()
     return redirect(url_for('dish_dashboard'))
+
+
+@app.route('/admin/dishes/edit/<int:dish_id>', methods=['GET', 'POST'])
+def edit_dish(dish_id):
+    d = dish.query.get_or_404(dish_id)
+
+    if request.method == 'POST':
+        d.name = request.form['name']
+        d.cuisine = request.form['cuisine']
+        d.veg = request.form.get('veg') == 'on'
+        d.price = request.form['price']
+        d.description = request.form['description']
+
+        image_file = request.files.get('image')
+        if image_file and image_file.filename != '':
+            image_folder = os.path.join(app.root_path, 'static', 'uploads', 'images')
+            os.makedirs(image_folder, exist_ok=True)
+            filename = secure_filename(image_file.filename)
+            save_path = os.path.join(image_folder, filename)
+            image_file.save(save_path)
+            d.image = filename   # update with new image
+
+        db.session.commit()
+        return redirect(url_for('dish_dashboard'))
+
+    return render_template('edit_dish.html', dish=d)
+
 
 
 # Add Event Page
@@ -299,36 +316,7 @@ services_data = [
     }
 ]
 
-# events_data = [
-#     {
-#         'id': 1,
-#         'name': 'Royal Palace Wedding',
-#         'date': '2024-02-15',
-#         'location': 'Mumbai',
-#         'guests': 300,
-#         # 'image': '/placeholder.svg?height=250&width=350',
-#         'image': 'static/WhatsApp Video 2025-07-13 at 4.34.09 PM.mp4',
-#         'description': 'A grand celebration at the Royal Palace with traditional decorations and premium catering.'
-#     },
-#     {
-#         'id': 2,
-#         'name': 'Beach Wedding Ceremony',
-#         'date': '2024-03-20',
-#         'location': 'Goa',
-#         'guests': 150,
-#         'image': '/placeholder.svg?height=250&width=350',
-#         'description': 'A beautiful beachside wedding with sunset views and coastal cuisine.'
-#     },
-#     {
-#         'id': 3,
-#         'name': 'Garden Wedding',
-#         'date': '2024-04-10',
-#         'location': 'Delhi',
-#         'guests': 200,
-#         'image': '/placeholder.svg?height=250&width=350',
-#         'description': 'An elegant garden wedding with floral themes and outdoor dining.'
-#     }
-# ]
+
 
 
 # Define the filter
@@ -365,31 +353,15 @@ dishes_data = {
 
 
 
-# In-memory sample data (replace with DB later if needed)
-DISHES = [
-    {"id": 1, "name": "Paneer Tikka", "cuisine": "Indian", "veg": True,  "price": 180, "image": "dc_event/static/Screenshot 2025-08-12 124022.png", "description": "Smoky cottage cheese cubes marinated in aromatic spices."},
-    {"id": 2, "name": "Herb Grilled Chicken", "cuisine": "Continental", "veg": False, "price": 260, "image": "images/dishes/grilled-chicken.jpg", "description": "Juicy chicken with herbs, served with sautéed vegetables."},
-    {"id": 3, "name": "Gulab Jamun", "cuisine": "Desserts", "veg": True,  "price": 120, "image": "images/dishes/gulab-jamun.jpg", "description": "Milk-solid dumplings in saffron sugar syrup."},
-    {"id": 4, "name": "Veg Hakka Noodles", "cuisine": "Chinese", "veg": True,  "price": 150, "image": "images/dishes/veg-hakka-noodles.jpg", "description": "Stir-fried noodles with crisp veggies and savory sauces."},
-    {"id": 5, "name": "Cold Coffee", "cuisine": "Beverages", "veg": True,  "price": 90,  "image": "images/dishes/cold-coffee.jpg", "description": "Chilled creamy coffee with ice."},
-    {"id": 6, "name": "Butter Chicken", "cuisine": "Indian", "veg": False, "price": 280, "image": "images/dishes/butter-chicken.jpg", "description": "Creamy tomato-based chicken curry."},
-    {"id": 7, "name": "Tiramisu", "cuisine": "Desserts", "veg": True,  "price": 200, "image": "images/dishes/tiramisu.jpg", "description": "Classic coffee-flavored Italian dessert."},
-    {"id": 8, "name": "Garlic Bread", "cuisine": "Continental", "veg": True,  "price": 110, "image": "images/dishes/garlic-bread.jpg", "description": "Toasted bread with garlic butter and herbs."},
-    {"id": 9, "name": "Veg Manchurian", "cuisine": "Chinese", "veg": True,  "price": 170, "image": "images/dishes/manchurian.jpg", "description": "Crispy veggie balls in tangy Manchurian sauce."},
-    {"id": 10, "name": "Fresh Lime Soda", "cuisine": "Beverages", "veg": True,  "price": 80,  "image": "images/dishes/fresh-lime-soda.jpg", "description": "Refreshing sweet and salty lime soda."},
-]
+# @app.get("/api/dishes")
+# def api_dishes():
+#     # Simple: return all dishes, no filters/CRUD
+#     return jsonify(DISHES)
 
-
-
-@app.get("/api/dishes")
-def api_dishes():
-    # Simple: return all dishes, no filters/CRUD
-    return jsonify(DISHES)
-
-@app.get("/catering")
-def catering_page():
-    # Render a page that shows all dishes using a simple attractive grid
-    return render_template("catering.html", dishes=DISHES)
+# @app.get("/catering")
+# def catering_page():
+#     # Render a page that shows all dishes using a simple attractive grid
+#     return render_template("catering.html", dishes=DISHES)
 
 
 

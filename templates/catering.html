@@ -1,13 +1,9 @@
-<!doctype html>
-<html lang="en">
-<head>
+
+{% extends "base.html" %}
+{% block content %}
   <meta charset="utf-8" />
-  <title>Catering & Cuisine</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-   Optional icons 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+
   <style>
 
     /* Color system (5 colors) */
@@ -87,13 +83,7 @@
       .cs-card{ background:#0f172a; border-color:#1f2937; box-shadow:0 8px 22px rgba(0,0,0,.25); }
       .cs-price{ color:#f8fafc; }
     }
-    /* :root {
-      --brand: #111827; /* near-black */
-      --accent: #0ea5e9; /* cyan-blue accent */
-      --bg: #ffffff;
-      --muted: #6b7280;
-      --ring: #e5e7eb;
-    }
+  
     * { box-sizing: border-box; }
     body { margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: var(--bg); color: var(--brand); }
     .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem 3rem; }
@@ -128,18 +118,22 @@
   </style>
 </head>
 <body>
+
+  
+  
   <main class="container">
-    <div class="section-header">
-      <h2 class="text-balance">Catering & Cuisine</h2>
-      <p>Explore our signature dishes curated by expert chefs</p>
-      <div class="section-divider"></div>
+    <div class="cs-rtl-header">
+       <p class="cs-rtl-overline">Signature Dishes</p>
+    <h2 class="cs-rtl-title text-balance">Catering & Cuisine</h2>
+    <p class="cs-rtl-subtitle">Chef-curated plates crafted for memorable celebrations</p>
+    <div class="cs-rtl-divider" aria-hidden="true"></div>
     </div>
 
     <section class="dishes-grid" aria-label="All dishes">
       {% for dish in dishes %}
       <article class="dish-card" aria-labelledby="dish-{{ dish.id }}">
         <div class="dish-media">
-          <img src="{{ url_for('static', filename=dish.image) }}" alt="{{ dish.name }} - {{ dish.cuisine }} cuisine" loading="lazy" />
+ <img src="{{ url_for('static', filename='uploads/images/' + dish.image) }}">
           <span class="cuisine-badge">{{ dish.cuisine }}</span>
           <span class="diet-dot {{ 'veg' if dish.veg else 'nonveg' }}" title="{{ 'Vegetarian' if dish.veg else 'Non-Vegetarian' }}"></span>
         </div>
@@ -161,64 +155,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
-  <header class="cs-rtl-header">
-    <p class="cs-rtl-overline">Signature Dishes</p>
-    <h2 class="cs-rtl-title text-balance">Catering & Cuisine</h2>
-    <p class="cs-rtl-subtitle">Chef-curated plates crafted for memorable celebrations</p>
-    <div class="cs-rtl-divider" aria-hidden="true"></div>
-  </header>
+  
 
-   Scroller 
-  <div class="cs-rtl-scroller-viewport">
-    <ul class="cs-rtl-track">
-      {% for dish in dishes %}
-      <li class="cs-rtl-item">
-        <article class="cs-card" aria-labelledby="dish-{{ dish.id }}">
-          <div class="cs-media">
-            <img
-              src="{{ dish.image}}"
-              alt="{{ dish.name }} — {{ dish.cuisine }}"
-              loading="lazy"
-              onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/placeholder-4by3.jpg') }}';"
-            />
-            <span class="cs-badge">{{ dish.cuisine }}</span>
-            <span class="cs-dot {{ 'veg' if dish.veg else 'nonveg' }}" title="{{ 'Vegetarian' if dish.veg else 'Non-Vegetarian' }}"></span>
-            <div class="cs-fade" aria-hidden="true"></div>
-          </div>
-          <div class="cs-body">
-            <h3 id="dish-{{ dish.id }}" class="cs-name">{{ dish.name }}</h3>
-            {% if dish.description %}<p class="cs-desc">{{ dish.description }}</p>{% endif %}
-            {% if dish.price %}<span class="cs-price">₹{{ dish.price }}</span>{% endif %}
-          </div>
-        </article>
-      </li>
-      {% endfor %}
-
-       duplicate for seamless loop 
-      {% for dish in dishes %}
-      <li class="cs-rtl-item" aria-hidden="true">
-        <article class="cs-card">
-          <div class="cs-media">
-            <img
-              src="{{ dish.image | imgsrc }}"
-              alt=""
-              loading="lazy"
-              onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/placeholder-4by3.jpg') }}';"
-            />
-            <span class="cs-badge">{{ dish.cuisine }}</span>
-            <span class="cs-dot {{ 'veg' if dish.veg else 'nonveg' }}"></span>
-            <div class="cs-fade" aria-hidden="true"></div>
-          </div>
-          <div class="cs-body">
-            <h3 class="cs-name">{{ dish.name }}</h3>
-            {% if dish.description %}<p class="cs-desc">{{ dish.description }}</p>{% endif %}
-            {% if dish.price %}<span class="cs-price">₹{{ dish.price }}</span>{% endif %}
-          </div>
-        </article>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+  
   <script>
     // Simple reveal on scroll
     (function () {
@@ -236,3 +175,4 @@
   </script>
 </body>
 </html>
+{% endblock content %}

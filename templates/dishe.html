@@ -3,86 +3,105 @@
 <head>
     <title>Manage Dishes</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            padding: 20px;
+        }
+        h1 { text-align: center; }
         .dish-card {
             border: 1px solid #ddd;
             padding: 15px;
             margin: 15px;
             display: inline-block;
-            width: 250px;
+            width: 260px;
             vertical-align: top;
             border-radius: 8px;
             background: #fff;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
         }
-        .dish-card h3 { margin: 0 0 5px; }
+        .dish-card h3 { margin: 0 0 8px; }
+        .dish-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
         form input, form select, form textarea {
             margin-bottom: 10px;
             width: 100%;
             padding: 8px;
         }
+        .actions { margin-top: 8px; }
         .actions button { margin-right: 5px; }
     </style>
 </head>
 <body>
     <h1>Dish Management Dashboard</h1>
 
+    <!-- Add New Dish Form -->
     <form method="POST" action="{{ url_for('add_dish') }}" enctype="multipart/form-data">
-    <h3>Add New Dish</h3>
-    
-    <!-- Dish Name -->
-    <input type="text" name="name" placeholder="Dish Name" required>
-    
-    <!-- Cuisine -->
-    <input type="text" name="cuisine" placeholder="Cuisine (e.g. Indian, Chinese)" required>
-    
-    <!-- Veg/Non-Veg -->
-    <label>
-        <input type="radio" name="veg" value="True" checked> Veg
-    </label>
-    <label>
-        <input type="radio" name="veg" value="False"> Non-Veg
-    </label>
-    
-    <!-- Category (optional, if you keep it) -->
-    <select name="category">
-        <option value="">-- Select Category --</option>
-        <option value="Appetizer">Appetizer</option>
-        <option value="Main Course">Main Course</option>
-        <option value="Dessert">Dessert</option>
-    </select>
-          
-    <!-- Price -->
-    <input type="number" name="price" placeholder="Price (₹)" required>
-    
-    <!-- Image Upload -->
-    <input type="file" name="image" accept="image/*">
-    
-    <!-- Description -->
-    <textarea name="description" placeholder="Description"></textarea>
-    
-    <!-- Submit -->
-    <button type="submit">Add Dish</button>
-</form>
+        <h3>Add New Dish</h3>
+        
+        <input type="text" name="name" placeholder="Dish Name" required>
+        <input type="text" name="cuisine" placeholder="Cuisine (e.g. Indian, Chinese)" required>
 
+        <!-- Veg / Non-Veg -->
+        <label><input type="radio" name="veg" value="True" checked> Veg</label>
+        <label><input type="radio" name="veg" value="False"> Non-Veg</label>
+
+        <select name="category">
+            <option value="">-- Select Category --</option>
+            <option value="Appetizer">Appetizer</option>
+            <option value="Main Course">Main Course</option>
+            <option value="Dessert">Dessert</option>
+        </select>
+
+        <input type="number" name="price" placeholder="Price (₹)" required>
+        <input type="file" name="image" accept="image/*">
+        <textarea name="description" placeholder="Description"></textarea>
+
+        <button type="submit">Add Dish</button>
+    </form>
 
     <hr>
 
+    <!-- Existing Dishes -->
     {% for dish in dishes %}
     <div class="dish-card">
+        {% if dish.image %}
+            <img src="{{ url_for('static', filename='uploads/images/' ~ dish.image) }}" alt="{{ dish.name }}">
+        {% endif %}
         <h3>{{ dish.name }} - ₹{{ dish.price }}</h3>
-        <small>{{ dish.category }}</small>
+        <small>{{ dish.category }} | {{ "Veg" if dish.veg else "Non-Veg" }}</small>
         <p>{{ dish.description }}</p>
 
-        <form action="{{ url_for('edit_dish', id=dish.id) }}" method="POST">
+        <!-- Update Dish Form -->
+        <form action="{{ url_for('edit_dish', dish_id=dish.id) }}" method="POST" enctype="multipart/form-data">
             <input type="text" name="name" value="{{ dish.name }}" required>
-            <input type="text" name="category" value="{{ dish.category }}" required>
+            <input type="text" name="cuisine" value="{{ dish.cuisine }}" required>
+
+            <!-- Veg / Non-Veg -->
+            <label><input type="radio" name="veg" value="True" {% if dish.veg %}checked{% endif %}> Veg</label>
+            <label><input type="radio" name="veg" value="False" {% if not dish.veg %}checked{% endif %}> Non-Veg</label>
+
+            <input type="text" name="category" value="{{ dish.category }}">
             <input type="number" name="price" value="{{ dish.price }}" required>
+            <input type="file" name="image" accept="image/*">
             <textarea name="description">{{ dish.description }}</textarea>
+
             <div class="actions">
                 <button type="submit">Update</button>
-                <a href="{{ url_for('delete_dish', id=dish.id) }}" onclick="return confirm('Delete dish?')">Delete</a>
             </div>
+        </form>
+
+        <!-- Delete Form -->
+        <form action="{{ url_for('delete_dish', dish_id=dish.id) }}" method="POST" style="margin-top:5px;">
+            <button type="submit" onclick="return confirm('Are you sure you want to delete this dish?')">Delete</button>
         </form>
     </div>
     {% endfor %}
 </body>
 </html>
+    

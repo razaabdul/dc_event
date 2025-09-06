@@ -105,14 +105,16 @@
     </div>
 </section>
 
+<!--  dishesss------------------- -->
 
-<header class="cs-rtl-header">
-    <p class="cs-rtl-overline">Signature Dishes</p>
-    <h2 class="cs-rtl-title text-balance">Catering & Cuisine</h2>
-    <p class="cs-rtl-subtitle">Chef-curated plates crafted for memorable celebrations</p>
-    <div class="cs-rtl-divider" aria-hidden="true"></div>
-  </header>
+<section class="events-section" id="events">
 
+    <div class="container">
+    <div class="section-header">
+      <h2>Catering & Cuisine</h2>
+      <p>Chef-curated plates crafted for memorable celebrations</p>
+      <div class="section-divider"></div>
+    </div>  
 
 
   
@@ -122,12 +124,8 @@
       <li class="cs-rtl-item">
         <article class="cs-card" aria-labelledby="dish-{{ dish.id }}">
           <div class="cs-media">
-              <img
-          src="{{ url_for('static', filename='images/' + dish.image) if not dish.image.startswith('http') else dish.image }}"
-          alt="{{ dish.name }} — {{ dish.cuisine }}"
-          loading="lazy"
-          onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/images/placeholder-4by3.jpg') }}';"
-        />
+              <img src="{{ url_for('static', filename='uploads/images/' + dish.image) }}">
+
             <span class="cs-badge">{{ dish.cuisine }}</span>
             <span class="cs-dot {{ 'veg' if dish.veg else 'nonveg' }}" title="{{ 'Vegetarian' if dish.veg else 'Non-Vegetarian' }}"></span>
             <div class="cs-fade" aria-hidden="true"></div>
@@ -145,12 +143,8 @@
       <li class="cs-rtl-item" aria-hidden="true">
         <article class="cs-card">
           <div class="cs-media">
-            <img
-              src="{{ dish.image | imgsrc }}"
-              alt=""
-              loading="lazy"
-              onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/placeholder-4by3.jpg') }}';"
-            />
+           <img src="{{ url_for('static', filename='uploads/images/' + dish.image) }}">
+
             <span class="cs-badge">{{ dish.cuisine }}</span>
             <span class="cs-dot {{ 'veg' if dish.veg else 'nonveg' }}"></span>
             <div class="cs-fade" aria-hidden="true"></div>
@@ -165,47 +159,50 @@
       {% endfor %}
     </ul>
   </div>  
+</section>
 
 
 
-
-<!-- Recent Events Section -->
+ 
 <section class="events-section" id="events">
-    <div class="container">
-        <div class="section-header">
-            <h2>Recent Events</h2>
-            <p>Take a look at some of our recent successful wedding celebrations</p>
-            <div class="section-divider"></div>
-        </div>
-        
-        <div class="events-grid">
-                  {% for event in events %}
-            <div class="event-card">
-                <div class="event-image">
-                  <video id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
-<source src="{{ url_for('static', filename=event.image) }}" type="video/mp4">   
-</video>
-                    <div class="event-overlay">
-                        <div class="event-info">
-                            <h3>{{ event.name }}</h3>
-                            <p><i class="fas fa-calendar"></i> {{ event.date.strftime('%B %d, %Y') }}</p>
-                            <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
-                            <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="event-content">
-                    <h4>{{ event.name }}</h4>
-                    <p>{{ event.description }}</p>
-                </div>
+  <div class="container">
+    <div class="section-header">
+      <h2>Recent Events</h2>
+      <p>Take a look at some of our recent successful wedding celebrations</p>
+      <div class="section-divider"></div>
+    </div>
+
+    <!-- Scroller -->
+    <div class="events-scroller-viewport">
+      <div class="events-track">
+        {% for event in events %}
+        <div class="event-card">
+          <div class="event-image">
+            <video id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
+              <source src="{{ url_for('static', filename=event.image) }}" type="video/mp4">
+            </video>
+            <div class="event-overlay">
+              <div class="event-info">
+                <h3>{{ event.name }}</h3>
+                <p><i class="fas fa-calendar"></i> {{ event.date.strftime('%B %d, %Y') }}</p>
+                <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+                <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
+              </div>
             </div>
-            {% endfor %}
+          </div>
+          <div class="event-content">
+            <h4>{{ event.name }}</h4>
+            <p>{{ event.description }}</p>
+          </div>
         </div>
+        {% endfor %}
+      </div>
     </div>
-        <div style="text-align: center; margin-top: 3rem;">
-            <a href="{{ url_for('events') }}" class="btn btn-primary">View All Events</a>
-        </div>
+
+    <div class="events-footer">
+      <a href="{{ url_for('events') }}" class="btn btn-primary">View All Events</a>
     </div>
+  </div>
 </section>
 
 
