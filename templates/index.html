@@ -133,7 +133,7 @@
           <div class="cs-body">
             <h3 id="dish-{{ dish.id }}" class="cs-name">{{ dish.name }}</h3>
             {% if dish.description %}<p class="cs-desc">{{ dish.description }}</p>{% endif %}
-            {% if dish.price %}<span class="cs-price">₹{{ dish.price }}</span>{% endif %}
+            <!-- {% if dish.price %}<span class="cs-price">₹{{ dish.price }}</span>{% endif %} -->
           </div>
         </article>
       </li>
@@ -152,7 +152,7 @@
           <div class="cs-body">
             <h3 class="cs-name">{{ dish.name }}</h3>
             {% if dish.description %}<p class="cs-desc">{{ dish.description }}</p>{% endif %}
-            {% if dish.price %}<span class="cs-price">₹{{ dish.price }}</span>{% endif %}
+            <!-- {% if dish.price %}<span class="cs-price">₹{{ dish.price }}</span>{% endif %} -->
           </div>
         </article>
       </li>
@@ -178,9 +178,14 @@
         {% for event in events %}
         <div class="event-card">
           <div class="event-image">
+                    {% if event.image.endswith('.mp4') %}
+
             <video id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
               <source src="{{ url_for('static', filename=event.image) }}" type="video/mp4">
             </video>
+                    {% else %}
+        <img class="hero-video" src="{{ url_for('static', filename=event.image) }}" alt="{{ event.name }}">
+{% endif %}
             <div class="event-overlay">
               <div class="event-info">
                 <h3>{{ event.name }}</h3>

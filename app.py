@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash ,session
 import os 
 import click
 from models import db, dish,Contact,Event
@@ -32,9 +32,12 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 # Flask-Mail config
+# Flask Config from .env
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
-app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT", 587))
-app.config['MAIL_USE_TLS'] = os.getenv("MAIL_USE_TLS", "true").lower() == "true"
+app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT"))
+app.config['MAIL_USE_TLS'] = os.getenv("MAIL_USE_TLS") == "True"
+app.config['MAIL_USE_SSL'] = os.getenv("MAIL_USE_SSL") == "True"
 app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
 app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_DEFAULT_SENDER")
@@ -47,20 +50,19 @@ mail = Mail(app)
 UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads', 'videos')
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads', 'videos')
 
-ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mov', 'mkv'}
+ALLOWED_EXTENSIONS =  {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'webm', 'ogg'}
+
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-
-
-
 @app.route('/admin/dishes')
 def dish_dashboard():
     dishes = dish.query.all()
-    return render_template('dishe.html', dishes=dishes)
+    total_dishes=len(dishes)
+    return render_template('dishe.html', dishes=dishes,total=total_dishes)
 
 @app.route('/admin/dishes/add', methods=['POST'])
 def add_dish():
@@ -69,6 +71,7 @@ def add_dish():
     veg = request.form.get('veg') == 'on'
     price = request.form['price']
     description = request.form['description']
+    category = request.form['category']
 
     image_file = request.files.get('image')
     image_path = None
@@ -88,6 +91,7 @@ def add_dish():
         cuisine=cuisine,
         veg=veg,
         price=price,
+        category=category,
         image=image_path,
         description=description
     )
@@ -99,16 +103,28 @@ def add_dish():
 
 @app.route('/dishes')
 def catering():
+    
     DD = dish.query.all()
     return render_template('catering.html',dishes=DD)
 
 
+# Delete Dish
 @app.route('/admin/dishes/delete/<int:dish_id>', methods=['POST'])
-def delete_dish(dish_id):
+def delete_dish(dish_id):   # ✅ fixed param name
     d = dish.query.get_or_404(dish_id)
+
+    # also remove image if exists
+    if d.image:
+        file_path = os.path.join(app.root_path, 'static', 'uploads', 'images', d.image)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
     db.session.delete(d)
     db.session.commit()
     return redirect(url_for('dish_dashboard'))
+
+
+
 
 
 @app.route('/admin/dishes/edit/<int:dish_id>', methods=['GET', 'POST'])
@@ -118,8 +134,9 @@ def edit_dish(dish_id):
     if request.method == 'POST':
         d.name = request.form['name']
         d.cuisine = request.form['cuisine']
-        d.veg = request.form.get('veg') == 'on'
+        d.veg = request.form['veg'] == 'True'   # ✅ works with radio buttons
         d.price = request.form['price']
+        d.category = request.form['category']
         d.description = request.form['description']
 
         image_file = request.files.get('image')
@@ -129,7 +146,7 @@ def edit_dish(dish_id):
             filename = secure_filename(image_file.filename)
             save_path = os.path.join(image_folder, filename)
             image_file.save(save_path)
-            d.image = filename   # update with new image
+            d.image = filename   # ✅ store filename only
 
         db.session.commit()
         return redirect(url_for('dish_dashboard'))
@@ -187,20 +204,41 @@ def add_event():
 def edit_event(id):
     e = Event.query.get_or_404(id)
     if request.method == 'POST':
-        e.name = request.form['name']
-        e.date = request.form['date']
-        e.location = request.form['location']
-        e.guests = request.form['guests']
-        e.description = request.form.get('description')
+        name = request.form['name']
+        date_str = request.form['date']
+        date = datetime.strptime(date_str, "%Y-%m-%d").date()
 
-        video_file = request.files.get('video')
-        if video_file and allowed_file(video_file.filename):
-            filename = secure_filename(video_file.filename)
-            video_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-            video_file.save(video_path)
-            e.image = video_path
+        location = request.form['location']
+        guests = request.form['guests']
+        description = request.form.get('description')
 
+        # Handle file upload (video or image)
+        uploaded_file = request.files.get('media')  # rename input field in form to "media"
+        media_path = None
+
+    if uploaded_file and allowed_file(uploaded_file.filename):
+        filename = secure_filename(uploaded_file.filename)
+
+        # Ensure upload folder exists
+        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+        # Save file
+        save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        uploaded_file.save(save_path)
+
+        # Store only relative path (without "static/")
+        media_path = f"uploads/media/{filename}"
+
+    # Save event
+        e = Event(
+            name=name,
+            date=date,
+            location=location,
+            guests=guests,
+            image=media_path,  # can be video or image
+            description=description
+        )
+        db.session.add(e)
         db.session.commit()
         return redirect(url_for('events_dashboard'))
 
@@ -226,9 +264,22 @@ def events_dashboard():
 
 
 @app.route('/calculator')
+
 def calculator():
-    dishes = dish.query.all()
-    return render_template('calculator.html',dishes=dishes)
+    all_dishes=dish.query.all()
+    categories = ['Appetizer', 'Main Course', 'Dessert']
+
+    dishes_by_category = {cat: [] for cat in categories}
+
+    for d in all_dishes:
+        if d.category in categories:
+            dishes_by_category[d.category].append({
+                'id': d.id,
+                'name': d.name,
+                'description': d.description,
+                'price': d.price
+            })
+    return render_template('calculator.html', dishes_by_category=dishes_by_category)
 
 
 # Sample data (in a real app, this would come from a database)
@@ -392,42 +443,65 @@ def dishes():
     return render_template('dishes.html', dishes=dishes_data)
 
 
+
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        phone = request.form.get('phone')
-        message_text = request.form.get('message')
-        event_date_str = request.form.get('event_date')
-        event_date = datetime.strptime(event_date_str, "%Y-%m-%d").date()
-        service = request.form.get('service')
-        budget = request.form.get('budget')
+        try:
+            name = request.form.get('name')
+            email = request.form.get('email')
+            phone = request.form.get('phone')
+            message_text = request.form.get('message')
+            event_date_str = request.form.get('event_date')
+            service = request.form.get('service')
+            budget = request.form.get('budget')
 
-        # Save to database
-        contact_entry = Contact(name=name, email=email, phone=phone, message=message_text,event_date=event_date
-                                ,service=service,budget=budget)
-        db.session.add(contact_entry)
-        db.session.commit()
+            # Convert event date if provided
+            event_date = None
+            if event_date_str:
+                event_date = datetime.strptime(event_date_str, "%Y-%m-%d").date()
 
-        # Send Email
-        msg = Message(subject="New Contact Form Submission",
-                    recipients=["dreamcreation2580@gmail.com"],  # <-- Replace with your receiver
-                    body=f"""
-        New Contact Message:
-        Name: {name}
-        Email: {email}
-        Phone: {phone}
-        Message: {message_text}
-        Event Date: {event_date}
-        Service: {service}
-        Budget: {budget}
-        """)
-        mail.send(msg)
+            # Save to database
+            contact_entry = Contact(
+                name=name,
+                email=email,
+                phone=phone,
+                message=message_text,
+                event_date=event_date,
+                service=service,
+                budget=budget
+            )
+            db.session.add(contact_entry)
+            db.session.commit()
 
-        # flash('Thank you for contacting us! We will reach out soon.', 'success')
+            # Send Email
+            msg = Message(
+                subject="📩 New Contact Form Submission",
+                sender=email,  # sender is the user's email
+                recipients=["abbdulrazza@gmail.com"],  # receiver (you)
+                body=f"""
+You have received a new contact form submission:
 
-    return render_template("contact.html")
+Name: {name}
+Email: {email}
+Phone: {phone}
+Message: {message_text}
+Event Date: {event_date if event_date else 'N/A'}
+Service: {service}
+Budget: {budget}
+"""
+            )
+            mail.send(msg)
+
+            flash("✅ Your message has been sent successfully!", "success")
+            return redirect(url_for('contact'))
+
+        except Exception as e:
+            print("Error:", e)
+            flash("❌ Something went wrong. Please try again later.", "danger")
+            return redirect(url_for('contact'))
+
+    return render_template('contact.html')
 
 if __name__ == '__main__':
     app.run(debug=True,port=5000)

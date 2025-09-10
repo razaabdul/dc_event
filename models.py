@@ -31,6 +31,7 @@ class dish(db.Model):
     price = db.Column(db.Integer, nullable=False)
     image = db.Column(db.String(255), nullable=True)          # Added
     description = db.Column(db.String(255), nullable=True)
+    category = db.Column(db.String(50), nullable=True)
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)

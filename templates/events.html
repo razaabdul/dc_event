@@ -19,38 +19,55 @@
             <p>Take a look at some beautiful weddings we've planned and executed</p>
             <div class="section-divider"></div>
         </div>
-        
+
         <div class="events-grid">
-            {% for event in all_evnt %}
-            <div class="event-card">
-                <div class="event-image">
-               <video id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
-<source src="{{ url_for('static', filename=event.image) }}" type="video/mp4">    Your browser does not support the video tag.
-</video>
-
-                    <!-- <img src="{{ event.image }}" > -->
-                    <div class="event-overlay">
-                        <div class="event-info">
-                            <h3>{{ event.name }}</h3>
-                            <p><i class="fas fa-calendar"></i> {{ event.date }}</p>
-                            <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
-                            <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
-                            <!-- <a href="#" class="btn btn-primary btn-small">View Details</a> -->
-                            <span class="btn btn-primary btn-small" onclick="playVideoFullscreen('{{ event.id }}')">Click to Play</span>
-
-                        </div>
+           {% for event in all_evnt %}
+<div class="event-card">
+    <div class="event-image">
+        {% if event.image %}
+            {% if event.image.endswith('.mp4') or event.image.endswith('.webm') or event.image.endswith('.ogg') %}
+                <!-- Show video -->
+                <video id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
+                    <source src="{{ url_for('static', filename=event.image) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="event-overlay">
+                    <div class="event-info">
+                        <h3>{{ event.name }}</h3>
+                        <p><i class="fas fa-calendar"></i> {{ event.date }}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+                        <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
+                        <span class="btn btn-primary btn-small" onclick="playVideoFullscreen('{{ event.id }}')">Click to Play</span>
                     </div>
                 </div>
-                <div class="event-content">
-                    <h4>{{ event.name }}</h4>
-                    <p>{{ event.description }}</p>
-                    <div class="event-meta">
-                        <span><i class="fas fa-calendar"></i> {{ event.date }}</span>
-                        <span><i class="fas fa-map-marker-alt"></i> {{ event.location }}</span>
+            {% else %}
+                <!-- Show image -->
+                <img src="{{ url_for('static', filename=event.image) }}" alt="{{ event.name }}" class="event-img">
+                <div class="event-overlay">
+                    <div class="event-info">
+                        <h3>{{ event.name }}</h3>
+                        <p><i class="fas fa-calendar"></i> {{ event.date }}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+                        <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
+            {% endif %}
+        {% else %}
+            <!-- Fallback if no media -->
+            <img src="{{ url_for('static', filename='uploads/media/default.jpg') }}" alt="No media available" class="event-img">
+        {% endif %}
+    </div>
+
+    <div class="event-content">
+        <h4>{{ event.name }}</h4>
+        <p>{{ event.description }}</p>
+        <div class="event-meta">
+            <span><i class="fas fa-calendar"></i> {{ event.date }}</span>
+            <span><i class="fas fa-map-marker-alt"></i> {{ event.location }}</span>
+        </div>
+    </div>
+</div>
+{% endfor %}
         </div>
     </div>
 </section>
@@ -190,153 +207,145 @@
 
 {% block extra_css %}
 <style>
-    
-.page-header {
-    background: var(--gradient-black);
-    color: var(--white);
-    padding: 120px 0 80px;
-    text-align: center;
-}
-
-.page-header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: var(--accent-gold);
-}
-
-.event-meta {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    color: var(--medium-gray);
-}
-
-.event-meta span {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-.event-types {
-    background: var(--light-gray);
-    padding: 80px 0;
-}
-
-.event-types-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-}
-
-.event-type-card {
-    background: var(--white);
-    padding: 2rem;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: var(--shadow-light);
-    transition: all 0.3s ease;
-}
-
-.event-type-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-medium);
-}
-
-.event-type-icon {
-    width: 80px;
-    height: 80px;
-    background: var(--gradient-gold);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1rem;
-}
-
-.event-type-icon i {
-    font-size: 2rem;
-    color: var(--primary-black);
-}
-
-.event-type-card h3 {
-    font-family: 'Playfair Display', serif;
-    color: var(--primary-black);
-    margin-bottom: 0.5rem;
-}
-
-.testimonials {
-    padding: 80px 0;
-}
-
-.testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
-    margin-top: 3rem;
-}
-
-.testimonial-card {
-    background: var(--white);
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: var(--shadow-light);
-    transition: all 0.3s ease;
-}
-
-.testimonial-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-medium);
-}
-
-.testimonial-content {
-    margin-bottom: 1.5rem;
-}
-
-.testimonial-content p {
-    font-style: italic;
-    color: var(--medium-gray);
-    line-height: 1.6;
-}
-
-.testimonial-author {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.author-info h4 {
-    color: var(--primary-black);
-    margin-bottom: 0.2rem;
-}
-
-.author-info span {
-    color: var(--medium-gray);
-    font-size: 0.9rem;
-}
-
-.rating {
-    color: var(--accent-gold);
-}
-
-@media (max-width: 768px) {
-    .page-header h1 {
-        font-size: 2rem;
-    }
-    
-    .event-meta {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .testimonial-author {
-        flex-direction: column;
-        gap: 1rem;
+        
+        
+    .page-header {
+        background: var(--gradient-black);
+        color: var(--white);
+        padding: 120px 0 80px;
         text-align: center;
     }
+
+    .page-header h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: var(--accent-gold);
+    }
+
+    .event-meta {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: var(--medium-gray);
+    }
+
+    .event-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .event-types {
+        background: var(--light-gray);
+        padding: 80px 0;
+    }
+
+    .event-types-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    gap:20px 
 }
+
+    .event-type-card {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: var(--shadow-light);
+        transition: all 0.3s ease;
+    }
+
+    .event-type-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    .event-type-icon {
+        width: 80px;
+        height: 80px;
+        background: var(--gradient-gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+
+    .event-type-icon i {
+        font-size: 2rem;
+        color: var(--primary-black);
+    }
+
+    .event-type-card h3 {
+        font-family: 'Playfair Display', serif;
+        color: var(--primary-black);
+        margin-bottom: 0.5rem;
+    }
+
+    .testimonials {
+        padding: 80px 0;
+    }
+
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .testimonial-card {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: var(--shadow-light);
+        transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    .testimonial-content {
+        margin-bottom: 1.5rem;
+    }
+
+    .testimonial-content p {
+        font-style: italic;
+        color: var(--medium-gray);
+        line-height: 1.6;
+    }
+
+    .testimonial-author {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .author-info h4 {
+        color: var(--primary-black);
+        margin-bottom: 0.2rem;
+    }
+
+    .author-info span {
+        color: var(--medium-gray);
+        font-size: 0.9rem;
+    }
+
+    .rating {
+        color: var(--accent-gold);
+    }
+
+   
+    
 </style>
 <script>
      function playVideoFullscreen(id) {

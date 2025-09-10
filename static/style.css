@@ -291,22 +291,22 @@ body {
 }
 
 .hero-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 4.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.7);
-  background: linear-gradient(135deg, var(--white), var(--light-gold));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: titleGlow 3s ease-in-out infinite alternate;
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.7);
+    background: linear-gradient(135deg, var(--white), var(--light-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleGlow 3s ease-in-out infinite alternate;
 }
 
 .hero-subtitle {
     font-family: 'Playfair Display', serif;
-    font-size: 4.5rem;
-    font-weight: 700;
+    font-size: 3.5rem;
+    font-weight: 300;
     margin-bottom: 1rem;
     text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.7);
     background: linear-gradient(135deg, var(--white), var(--light-gold));

@@ -21,9 +21,7 @@
         <!-- Menu Layout -->
         <div class="menu-layout">
             <div class="menu-content">
-                {% set categories = ['Appetizer', 'Main Course', 'Dessert'] %}
-                {% for category in categories %}
-                    {% set category_dishes = dishes|selectattr('category', 'equalto', category)|list %}
+    {% for category, category_dishes in dishes_by_category.items() %}
                     {% if category_dishes %}
                     <div class="category-section">
                         <div class="category-header {{ category.lower() }}">{{ category }}s</div>
@@ -39,9 +37,9 @@
                                 </div>
                                 <div class="dish-actions">
                                     <div class="quantity-controls">
-                                        <button class="quantity-btn" onclick="changeDishQuantity({{ dish.id }}, -1)" disabled>−</button>
+                                        <button class="quantity-btn" onclick="changeDishQuantity({{ dish.id }}, -1)" >−</button>
                                         <div class="quantity-display" id="qty-{{ dish.id }}">0</div>
-                                        <button class="quantity-btn" onclick="changeDishQuantity({{ dish.id }}, 1)">+</button>
+    <button class="quantity-btn" onclick="changeDishQuantity({{ dish.id }}, 1)">+</button>
                                     </div>
                                     <div class="dish-total">Total: ₹<span id="total-{{ dish.id }}">0</span></div>
                                 </div>

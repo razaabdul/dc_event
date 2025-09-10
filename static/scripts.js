@@ -299,3 +299,7 @@ document.addEventListener("DOMContentLoaded", function() {
       cards.forEach(c => io.observe(c));
     })();
   
+
+
+     const track = document.getElementById('eventsTrack');
+  track.innerHTML += track.innerHTML;
