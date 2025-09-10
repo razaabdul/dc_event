@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash ,session
 import os 
 import click
-from models import db, dish,Contact,Event
+from models import db, dish,Contact,event
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_mail import Mail
@@ -21,8 +21,7 @@ app.secret_key = os.getenv("SECRET_KEY", "fallback-secret")
 # Database config
 # Database config (Postgres)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    "DATABASE_URL",  # Read from environment
-    "postgresql://postgres:postgres@localhost:5432/dcevent")
+    "DATABASE_URL")  # Read from environment
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Bind SQLAlchemy to app
@@ -185,7 +184,7 @@ def add_event():
             # Store only relative path without "static/"
             video_path = f"uploads/videos/{filename}"
 
-        e = Event(
+        e = event(
             name=name,
             date=date,
             location=location,
@@ -202,7 +201,7 @@ def add_event():
 # Edit Event
 @app.route('/admin/events/edit/<int:id>', methods=['GET', 'POST'])
 def edit_event(id):
-    e = Event.query.get_or_404(id)
+    e = event.query.get_or_404(id)
     if request.method == 'POST':
         name = request.form['name']
         date_str = request.form['date']
@@ -247,7 +246,7 @@ def edit_event(id):
 # Delete Event
 @app.route('/admin/events/delete/<int:id>')
 def delete_event(id):
-    e = Event.query.get_or_404(id)
+    e = event.query.get_or_404(id)
     if e.image and os.path.exists(e.image):
         os.remove(e.image)  # remove video from server
     db.session.delete(e)
@@ -257,7 +256,7 @@ def delete_event(id):
 # Show All Events
 @app.route('/admin/events')
 def events_dashboard():
-    events = Event.query.all()
+    events = event.query.all()
     return render_template('events_dashboard.html', events=events)
 
 
@@ -267,7 +266,7 @@ def events_dashboard():
 
 def calculator():
     all_dishes=dish.query.all()
-    categories = ['Appetizer', 'Main Course', 'Dessert']
+    categories = ['Appetizer', 'Main Course', 'Dessert','Breads','Drinks']
 
     dishes_by_category = {cat: [] for cat in categories}
 
@@ -418,7 +417,7 @@ dishes_data = {
 
 @app.route('/')
 def home():
-    all_events = Event.query.all()
+    all_events = event.query.all()
     dd = dish.query.all()
     return render_template('index.html',events=all_events,d=dd)
 @app.route('/about')
@@ -435,7 +434,7 @@ def services():
 
 @app.route('/events')
 def events():
-    q=Event.query.all()
+    q=event.query.all()
     return render_template('events.html', all_evnt=q)
 
 @app.route('/dishes')

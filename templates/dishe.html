@@ -3,319 +3,371 @@
 <head>
     <title>Manage Dishes</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background: #f4f6f9;
-            color: #333;
-        }
-
-        header {
-            background: #4CAF50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .dashboard {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .stats {
-            background: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .container {
-            display: flex;
-            gap: 30px;
-            padding: 20px;
-        }
-
-        /* Left side - Add Dish Form */
-        .form-section {
-            flex: 1;
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        .form-section h2 {
-            margin-bottom: 15px;
-        }
-
-        form input, form select, form textarea, form button {
-            width: 100%;
-            margin-bottom: 12px;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
-
-        form button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        form button:hover {
-            background: #45a049;
-        }
-
-        /* Right side - Dish List */
-        .dish-list {
-            flex: 2;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
-        }
-
-        .dish-card {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        .dish-card h3 {
-            margin: 0 0 8px;
-            font-size: 18px;
-            color: #4CAF50;
-        }
-
-        .dish-card small {
-            color: #888;
-        }
-
-        .dish-card p {
-            margin: 8px 0;
-            font-size: 14px;
-        }
-
-        .dish-card form input, 
-        .dish-card form textarea {
-            margin-bottom: 8px;
-        }
-
-        .actions {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .actions button {
-            flex: 1;
-            margin-right: 5px;
-            background: #2196F3;
-        }
-
-        .actions button:hover {
-            background: #1976D2;
-        }
-.form-container {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-}
-        .actions a {
-            flex: 1;
-            display: inline-block;
-            text-align: center;
-            padding: 10px;
-            background: #f44336;
-            color: white;
-            border-radius: 6px;
-            text-decoration: none;
-        }
-
-        .actions a:hover {
-            background: #d32f2f;
-        }
-        .form-card {
-    background: #f8f9fa;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-    max-width: 500px;
-    width: 100%;
-}
-
-.form-card h2 {
-    margin-bottom: 20px;
-    text-align: center;
-    color: #333;
-}
-
-.form-card label {
-    display: block;
-    margin-top: 12px;
-    font-weight: bold;
-    color: #444;
-}
-
-.form-card input[type="text"],
-.form-card input[type="number"],
-.form-card select,
-.form-card textarea,
-.form-card input[type="file"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 6px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-}
-
-.radio-group {
-    display: flex;
-    gap: 15px;
-    margin-top: 6px;
-}
-
-.image-preview {
-    margin-top: 10px;
-}
-
-.image-preview img {
-    border-radius: 8px;
-    box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
-}
-
-.actions {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.actions button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.actions button:hover {
-    background: #0056b3;
-}
+ 
     </style>
 </head>
 <body>
   
-    <header>
-        <h1>Dish Management Dashboard</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dish Management Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header-section">
+        <div class="container">
+            <div class="d-flex align-items-center gap-3 py-4">
+                <i class="bi bi-utensils-fill text-orange fs-2"></i>
+                <h1 class="mb-0 fw-bold text-dark">Dish Management Dashboard</h1>
+            </div>
+        </div>
     </header>
 
-    <div class="dashboard">
-        <div class="stats">
-            🍽️ Total Dishes: <strong>{{ total }}</strong>
-        </div>
-    </div>
-
-    <div class="container">
-        <!-- Left: Add New Dish -->
-        <div class="form-section">
-            <h2>Add New Dish</h2>
-            <form method="POST" action="{{ url_for('add_dish') }}" enctype="multipart/form-data">
-                <input type="text" name="name" placeholder="Dish Name" required>
-                <input type="text" name="cuisine" placeholder="Cuisine (e.g. Indian, Chinese)" required>
-                
-                <label><input type="radio" name="veg" value="True" checked> Veg</label>
-                <label><input type="radio" name="veg" value="False"> Non-Veg</label>
-                
-                <select name="category">
-                    <option value="">-- Select Category --</option>
-                    <option value="Appetizer">Appetizer</option>
-                    <option value="Main Course">Main Course</option>
-                    <option value="Dessert">Dessert</option>
-                </select>
-                
-                <input type="number" name="price" placeholder="Price (₹)" required>
-                <input type="file" name="image" accept="image/*">
-                <textarea name="description" placeholder="Description"></textarea>
-                <button type="submit">➕ Add Dish</button>
-            </form>
-        </div>
-
-        <!-- Right: Dish List -->
-        <div class="dish-list">
-            {% for dish in dishes %}
-            <div class="dish-card">
-                <!-- Dish Image -->
-    {% if dish.image %}
-        <img src="{{ url_for('static', filename='uploads/images/' + dish.image) }}" alt="{{ dish.name }}" style="width:100%; height:160px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
-    {% else %}
-        <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" alt="No Image" style="width:100%; height:160px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
-    {% endif %}
-
-    <!-- Dish Details -->
-<form action="{{ url_for('edit_dish', dish_id=dish.id) }}" method="POST" enctype="multipart/form-data" class="form-container">
-
-    <div class="form-card">
-        <h2>Edit Dish</h2>
-
-        <!-- Dish Name -->
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="{{ dish.name }}" required>
-
-        <!-- Category Dropdown -->
-        <label for="category">Category:</label>
-        <select id="category" name="category" required>
-            <option value="">-- Select Category --</option>
-            <option value="Appetizer" {% if dish.category == "Appetizer" %}selected{% endif %}>Appetizer</option>
-            <option value="Main Course" {% if dish.category == "Main Course" %}selected{% endif %}>Main Course</option>
-            <option value="Dessert" {% if dish.category == "Dessert" %}selected{% endif %}>Dessert</option>
-        </select>
-
-        <!-- Price -->
-        <label for="price">Price (₹):</label>
-        <input type="number" id="price" name="price" value="{{ dish.price }}" required>
-
-        <!-- Cuisine -->
-        <label for="cuisine">Cuisine:</label>
-        <input type="text" id="cuisine" name="cuisine" value="{{ dish.cuisine }}" required>
-
-        <!-- Veg/Non-Veg -->
-        <label>Type:</label>
-        <div class="radio-group">
-            <label><input type="radio" name="veg" value="True" {% if dish.veg %}checked{% endif %}> Veg</label>
-            <label><input type="radio" name="veg" value="False" {% if not dish.veg %}checked{% endif %}> Non-Veg</label>
-        </div>
-
-        <!-- Description -->
-        <label for="description">Description:</label>
-        <textarea id="description" name="description">{{ dish.description }}</textarea>
-
-        <!-- Image Upload -->
-        <label for="image">Update Image:</label>
-        <input type="file" id="image" name="image" accept="image/*">
-
-        <!-- Current Image Preview -->
-
-
-        <!-- Submit -->
-        <div class="actions">
-            <button type="submit">✏️ Update</button>
-        </div>
-    </div>
-</form>
-
-<form action="{{ url_for('delete_dish', dish_id=dish.id) }}" method="POST" style="display:inline;">
-    <button type="submit" onclick="return confirm('Delete this dish?')">🗑️ Delete</button>
-</form>           
-</div>
+    <!-- Stats Card -->
+    <div class="container py-4">
+        <div class="card stats-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-utensils-fill"></i>
+                    <!-- Updated to use Flask template variable for total dishes -->
+                    <span class="fs-5">Total Dishes: <strong>{{ total }}</strong></span>
+                </div>
             </div>
-            {% endfor %}
         </div>
     </div>
+
+    <div class="container pb-5">
+        <div class="row g-4">
+            <!-- Add New Dish Form -->
+            <div class="col-lg-4">
+                <div class="card sticky-form">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-plus-circle"></i>
+                            Add New Dish
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Updated form to use Flask backend routes and field names -->
+                        <form method="POST" action="{{ url_for('add_dish') }}" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" name="name" placeholder="Dish Name" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <input type="text" class="form-control" name="cuisine" placeholder="Cuisine (e.g. Indian, Chinese)" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="veg" value="True" checked>
+                                        <label class="form-check-label">Veg</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="veg" value="False">
+                                        <label class="form-check-label">Non-Veg</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <select class="form-select" name="category">
+                                    <option value="">-- Select Category --</option>
+                                    <option value="Appetizer">Appetizer</option>
+                                    <option value="Main Course">Main Course</option>
+                                    <option value="Dessert">Dessert</option>
+                                    <option value="Breads">Breads</option>
+                                    <option value="Drinks">Drinks</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <input type="number" class="form-control" name="price" placeholder="Price (₹)" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <input type="file" class="form-control" name="image" accept="image/*">
+                            </div>
+
+                            <div class="mb-3">
+                                <textarea class="form-control" name="description" rows="3" placeholder="Description"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-orange w-100">
+                                <i class="bi bi-plus-circle me-2"></i>
+                                ➕ Add Dish
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dish List -->
+            <div class="col-lg-8">
+                <!-- Updated to use Flask template loop for dishes -->
+                {% for dish in dishes %}
+                <div class="card dish-card mb-4">
+                    <div class="row g-0">
+                        <div class="col-md-3">
+                            <!-- Updated image handling to use Flask static files -->
+                            {% if dish.image %}
+                                <img src="{{ url_for('static', filename='uploads/images/' + dish.image) }}" 
+                                     alt="{{ dish.name }}" class="dish-image">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='images/placeholder.jpg') }}" 
+                                     alt="No Image" class="dish-image">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-9">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="card-title mb-0">{{ dish.name }}</h5>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-outline-orange" onclick="toggleEditForm('edit-form-{{ dish.id }}')">
+                                            <i class="bi bi-pencil"></i> Update
+                                        </button>
+                                        <form action="{{ url_for('delete_dish', dish_id=dish.id) }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                    onclick="return confirm('Delete this dish?')">
+                                                <i class="bi bi-trash"></i> 🗑️ Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                
+                                <div class="dish-info">
+                                    <span class="badge bg-light text-dark me-2">{{ dish.cuisine }}</span>
+                                    <span class="badge {% if dish.veg %}bg-success{% else %}bg-danger{% endif %} me-2">
+                                        {% if dish.veg %}Veg{% else %}Non-Veg{% endif %}
+                                    </span>
+                                    <span class="badge bg-secondary me-2">{{ dish.category }}</span>
+                                    <span class="price-tag">₹{{ dish.price }}</span>
+                                </div>
+                                
+                                {% if dish.description %}
+                                <p class="card-text mt-2 text-muted">{{ dish.description }}</p>
+                                {% endif %}
+
+                                <!-- Updated edit form structure to match exact backend field structure -->
+                                <div id="edit-form-{{ dish.id }}" class="edit-form mt-3" style="display: none;">
+                                    <form action="{{ url_for('edit_dish', dish_id=dish.id) }}" method="POST" enctype="multipart/form-data">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="name">Name:</label>
+                                                <input type="text" id="name" class="form-control" name="name" value="{{ dish.name }}" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="category">Category:</label>
+                                                <select id="category" class="form-select" name="category" required>
+                                                    <option value="">-- Select Category --</option>
+                                                    <option value="Appetizer" {% if dish.category == "Appetizer" %}selected{% endif %}>Appetizer</option>
+                                                    <option value="Main Course" {% if dish.category == "Main Course" %}selected{% endif %}>Main Course</option>
+                                                    <option value="Dessert" {% if dish.category == "Dessert" %}selected{% endif %}>Dessert</option>
+                                                    <option value="Breads" {% if dish.category == "Breads" %}selected{% endif %}>Breads</option>
+                                                    <option value="Drinks" {% if dish.category == "Drinks" %}selected{% endif %}>Drinks</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="price">Price (₹):</label>
+                                                <input type="number" id="price" class="form-control" name="price" value="{{ dish.price }}" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="cuisine">Cuisine:</label>
+                                                <input type="text" id="cuisine" class="form-control" name="cuisine" value="{{ dish.cuisine }}" required>
+                                            </div>
+                                            <div class="col-12">
+                                                <label>Type:</label>
+                                                <div class="d-flex gap-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="veg" value="True" {% if dish.veg %}checked{% endif %}>
+                                                        <label class="form-check-label">Veg</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="veg" value="False" {% if not dish.veg %}checked{% endif %}>
+                                                        <label class="form-check-label">Non-Veg</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="description">Description:</label>
+                                                <textarea id="description" class="form-control" name="description" rows="2">{{ dish.description }}</textarea>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="image">Update Image:</label>
+                                                <input type="file" id="image" class="form-control" name="image" accept="image/*">
+                                            </div>
+                                            <div class="col-12">
+                                                <button type="submit" class="btn btn-orange me-2">
+                                                    <i class="bi bi-check-circle"></i> ✏️ Update
+                                                </button>
+                                                <button type="button" class="btn btn-secondary" onclick="toggleEditForm('edit-form-{{ dish.id }}')">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Updated JavaScript to handle Flask template structure -->
+    <script>
+        function toggleEditForm(formId) {
+            const form = document.getElementById(formId);
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+    </script>
 </body>
+</html>
+
+<style>
+    /* Custom CSS styles for the dish management dashboard */
+:root {
+  --orange-primary: #ea580c;
+  --orange-hover: #c2410c;
+  --orange-light: #fed7aa;
+  --red-primary: #dc2626;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-600: #4b5563;
+  --gray-900: #111827;
+}
+
+body {
+  background: linear-gradient(135deg, #fff7ed 0%, #fef2f2 100%);
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header-section {
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.text-orange {
+  color: var(--orange-primary) !important;
+}
+
+.stats-card {
+  background: linear-gradient(135deg, var(--orange-primary) 0%, var(--red-primary) 100%);
+  color: white;
+  border: none;
+}
+
+.stats-card .bi {
+  font-size: 1.5rem;
+}
+
+.sticky-form {
+  position: sticky;
+  top: 1rem;
+}
+
+.btn-orange {
+  background-color: var(--orange-primary);
+  border-color: var(--orange-primary);
+  color: white;
+}
+
+.btn-orange:hover {
+  background-color: var(--orange-hover);
+  border-color: var(--orange-hover);
+  color: white;
+}
+
+.dish-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dish-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dish-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.dish-price {
+  color: var(--orange-primary);
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.badge-veg {
+  background-color: #16a34a;
+  color: white;
+}
+
+.badge-nonveg {
+  background-color: #dc2626;
+  color: white;
+}
+
+.edit-form {
+  background-color: var(--gray-50);
+  border-top: 1px solid #e5e7eb;
+  display: none;
+}
+
+.edit-form.show {
+  display: block;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.btn-success-custom {
+  background-color: #16a34a;
+  border-color: #16a34a;
+  color: white;
+}
+
+.btn-success-custom:hover {
+  background-color: #15803d;
+  border-color: #15803d;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .dish-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .sticky-form {
+    position: static;
+  }
+}
+
+</style>
 </html>
