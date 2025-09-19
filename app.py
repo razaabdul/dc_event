@@ -63,19 +63,21 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
 
-
-
+tables_initialized = False
 
 # ✅ Auto-create tables if they don't exist (runs only once per fresh database)
-@app.before_first_request
+@app.before_request
 def create_tables_if_not_exists():
-    with app.app_context():
+    global tables_initialized
+    if not tables_initialized:
         try:
-            from models import db  # Import models to register tables
-            db.create_all()
-            print("✅ Tables created successfully (if they didn't exist)")
+            with app.app_context():
+                from models import db  # Import to register models
+                db.create_all()
+                print("✅ Tables created successfully (if they didn't exist)")
         except Exception as e:
             print(f"⚠️ Skipping table creation: {e}")
+        tables_initialized = True
 
 
 
