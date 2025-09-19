@@ -1,159 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Plate Calculator - Dream Creation</title>
+    <style>
 
-{% extends "base.html" %}
+        .selected-dishes-list {
+  max-height: 240px; /* ~6 items at 40px each */
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-bottom: 1rem;
+}
 
-{% block content %}
+.selected-dishes-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.selected-dishes-list::-webkit-scrollbar-thumb {
+  background-color: #d4af37;
+  border-radius: 3px;
+}
+
+.selected-dishes-list::-webkit-scrollbar-track {
+  background-color: #f0e6d2;
+}
+.
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #faf8f3 0%, #f5f1e8 100%);
+            color: #2c2c2c;
+            min-height: 100vh;
+            
+        }
+
+        /* Updated header to match website's elegant cream theme */
+        .header {
+            background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            background: #ffffff;
+            color: #1a1a1a;
+            padding: 0.5rem 1rem;
+            font-weight: bold;
+            font-size: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #d4af37;
+        }
+
+        /* Updated hero section with elegant cream background and golden accents */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f8f5f0 0%, #ede7d9 100%);
+            border-bottom: 3px solid #d4af37;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            color: #2c2c2c;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .hero .highlight {
+            color: #d4af37;
+            font-weight: 600;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #666666;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-right: 30%;
+        }
+
+        /* Updated guest selector with warm cream tones */
+        .guest-selector {
+            background: #ffffff;
+            border-radius: 15px;
+            margin-left: 140px;
+            padding: 0rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.1);
+            border: 2px solid #f0e6d2;
+            height: 250px;
+        }
+
+        .guest-selector h3 {
+            color: #d4af37;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: 400;
+        }
+
+        .guest-selector p {
+            color: #666666;
+            margin-bottom: 1.5rem;
+        }
+
+        .guest-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .guest-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #f4c842 100%);
+            color: #ffffff;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .guest-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .guest-input {
+            background: #faf8f3;
+            border: 2px solid #d4af37;
+            color: #2c2c2c;
+            padding: 1rem;
+            font-size: 1.2rem;
+            text-align: center;
+            border-radius: 15px;
+            width: 120px;
+            font-weight: 600;
+        }
+
+        .menu-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            margin-top: 2rem;
+            padding-right: 100%;
+        }
+
+        .menu-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-right: 50px;
+        }
+
+        /* Updated category sections with elegant cream and warm tones */
+       .category-section {
+  background: #ffffff;
+  border-radius: 5px;
+  padding: 2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0e6d2;
+  height: auto;
+  width: 90%;
+  margin-left: -180px;
+  margin-bottom: 20px;              /* ensures it's not centered */
+  align-self: flex-start; 
+    overflow-x: auto;
+height: 500px;
+
+width: 160%;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  padding-bottom: 1rem;
+  max-width: 160%;     /* if inside a flex container */
+}
+
+
+        .category-header {
+            color: #2c2c2c;
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+        }
+
+        .category-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #d4af37 0%, #f4c842 100%);
+            border-radius: 2px;
+        }
+
+      .dish-scroll-container {
+ overflow-x: auto;
+    overflow-y: hidden; /* prevent vertical growth */
+    white-space: nowrap;
+    padding-bottom: 0.5rem;
+    max-width: 100%;
+}
+
+        .dish-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .dish-scroll-container::-webkit-scrollbar-track {
+            background: #f0e6d2;
+            border-radius: 4px;
+        }
+
+        .dish-scroll-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #d4af37 0%, #f4c842 100%);
+            border-radius: 4px;
+        }
+
+        .dish-list {
+            display: flex;
+            gap: 1rem;
+            min-width: max-content;
+            height: 428px;
+  width: max-content; /* ensures it stretches beyond container */        }
+
+        /* Redesigned dish cards with elegant styling and better image presentation */
+        .dish-item {
+            flex: 0 0 calc(25% - 12px); /* Show 4 items at a time */
+            min-width: 250px;
+            scroll-snap-align: start;
+            text-align: center;
+
+            background: #faf8f3;
+            border-radius: 20px;
+            padding: 0;
+            min-width: 300px;
+            max-width: 3px;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            overflow: hidden;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+        }
+
+        .dish-item:hover {
+            transform: translateY(-8px);
+            border-color: #d4af37;
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.2);
+        }
+.dish-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+.dish-scroll-container {
+  scrollbar-width: none; /* Firefox */
+}
+        .dish-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 0;
+        }
+
+        .dish-content {
+            padding: 1.5rem;
+        }
+
+        .dish-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .dish-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c2c2c;
+            margin-bottom: 0.8rem;
+        }
+
+        .dish-description {
+            color: #666666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .dish-price {
+            color: #d4af37;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .price-label {
+            color: #999999;
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        .dish-actions {
+            text-align: center;
+            border-top: 1px solid #f0e6d2;
+            padding-top: 1rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .quantity-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #f4c842 100%);
+            color: #ffffff;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+        }
+
+        .quantity-btn:hover:not(:disabled) {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .quantity-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.5;
+            box-shadow: none;
+        }
+
+        .quantity-display {
+            background: #ffffff;
+            color: #2c2c2c;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            min-width: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            border: 2px solid #f0e6d2;
+        }
+
+        .dish-total {
+            color: #d4af37;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        /* Updated summary box with elegant cream styling */
+        .summary-box {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 2rem;
+            border: 2px solid #d4af37;
+            position: sticky;
+            top: 2rem;
+            /* height: fit-content; */
+            height: auto;
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.15);
+            max-width: 100%;
+            margin-left: 80px ;
+            width: 83%;
+        }
+
+        .summary-box h3 {
+            color: #2c2c2c;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 300;
+            position: relative;
+        }
+
+        .summary-box h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(135deg, #d4af37 0%, #f4c842 100%);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0e6d2;
+        }
+
+        .summary-label {
+            color: #666666;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            color: #2c2c2c;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .final-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-top: 1rem;
+            border-top: 3px solid #d4af37;
+            font-size: 1.3rem;
+        }
+
+        .final-total .summary-label {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .final-total .summary-value {
+            color: #d4af37;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .quote-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #d4af37 0%, #f4c842 100%);
+            color: #ffffff;
+            border: none;
+            padding: 1.2rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .quote-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .menu-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .dish-item {
+                min-width: 280px;
+                max-width: 280px;
+            }
+        }
+        .dish-scroll-container {
+            width: 100%;
+  overflow-x: auto;
+  max-width: 100%; 
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  padding-bottom: 5rem;
+}
+
+.dish-list {
+  display: flex;
+      flex-wrap: nowrap;        /* Keep all dishes in a single row */
+
+  gap: 1rem;
+  min-width: max-content; /* ensures flex items don't wrap */
+}
+
+.dish-item {
+    flex: 0 0 260px;          /* Fixed card width (prevents stretching) */
+  min-width: 220px;           /* fallback width */
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  padding: 1rem;
+}
+
+
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">IQ</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#packages">Packages</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#events">Events</a></li>
+                <li><a href="#catering">Catering</a></li>
+                <li><a href="#calculate" class="active">Calculate plate</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1><span class="highlight">Catering</span> & Cuisine</h1>
+        <p>Chef-curated plates crafted for memorable celebrations</p>
+    </section>
+
+    <!-- Main Content -->
     <div class="container">
-        <h1 class="page-title">Exquisite Catering Calculator</h1>
-        <p class="page-subtitle">Calculate your perfect catering package for any event</p>
-
-        <!-- Guest Counter Section -->
-        <div class="guest-section">
+        <!-- Guest Selector -->
+        <div class="guest-selector">
             <h3>Number of Guests</h3>
+            <p>Select the number of guests for your wedding celebration</p>
             <div class="guest-controls">
-                <div class="guest-input">
-                    <button class="guest-btn" onclick="changeGuests(-1)">−</button>
-                    <input type="number" class="guest-display" id="guest-count" value="100" min="1" onchange="updateTotal()" >
-                    <button class="guest-btn" onclick="changeGuests(1)">+</button>
-                </div>
+                <button class="guest-btn" onclick="changeGuests(-10)">-10</button>
+                <button class="guest-btn" onclick="changeGuests(-1)">-</button>
+                <input type="number" id="guest-count" class="guest-input" value="100" min="1" onchange="updateTotal()">
+                <button class="guest-btn" onclick="changeGuests(1)">+</button>
+                <button class="guest-btn" onclick="changeGuests(10)">+10</button>
             </div>
         </div>
 
         <!-- Menu Layout -->
-        <div class="menu-layout">
-            <div class="menu-content">
-    {% for category, category_dishes in dishes_by_category.items() %}
-                    {% if category_dishes %}
-                    <div class="category-section">
-                        <div class="category-header {{ category.lower() }}">{{ category }}s</div>
+        <div class="category-section">
+    <div class="category-header">Appetizers</div>
+    <div class="dish-scroll-container">
+        <div class="dish-list">
+            {% for d in dishes_by_category['Appetizer'] %}
+            <div class="dish-item">
+                <img src="{{ url_for('static', filename='uploads/images/' + (d.image if d.image else 'default.png')) }}"
+                     alt="{{ d.name }}" class="dish-image">
+                <div class="dish-content">
+                    <div class="dish-info">
+                        <div class="dish-name">{{ d.name }}</div>
+                        <div class="dish-description">{{ d.description.split()[:3] | join(' ') }}</div>
+                        <div class="dish-price">₹{{ d.price }}</div>
+                    </div>
+                    <div class="dish-actions">
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="changeDishQuantity({{ d.id }}, -1)">−</button>
+                            <div class="quantity-display" id="qty-{{ d.id }}">0</div>
+                            <button class="quantity-btn" onclick="changeDishQuantity({{ d.id }}, 1)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+                <!-- Dessert -->
+     <div class="category-section">
+                    <div class="category-header">Dessert</div>
+                    <div class="dish-scroll-container">
                         <div class="dish-list">
-                            {% for dish in category_dishes %}
+                                                {% for d in dishes_by_category['Dessert'] %}
+
                             <div class="dish-item">
-                                <div class="dish-indicator"></div>
-                                <div class="dish-info">
-                                    <div class="dish-name">{{ dish.name }}</div>
-                                    <div class="dish-description">{{ dish.description or 'Delicious ' + dish.name.lower() + ' prepared with finest ingredients' }}</div>
-                                    <div class="dish-price">₹{{ dish.price }}</div>
-                                    <div class="price-label">per plate</div>
-                                </div>
-                                <div class="dish-actions">
-                                    <div class="quantity-controls">
-                                        <button class="quantity-btn" onclick="changeDishQuantity({{ dish.id }}, -1)" >−</button>
-                                        <div class="quantity-display" id="qty-{{ dish.id }}">0</div>
-    <button class="quantity-btn" onclick="changeDishQuantity({{ dish.id }}, 1)">+</button>
+<img src="{{ url_for('static', filename='uploads/images/' + (d.image if d.image else 'default.png')) }}"
+     alt="{{ d.name }}" class="dish-image">                                <div class="dish-content">
+                                    <div class="dish-info">
+                                        <div class="dish-name">{{d.name}}</div>
+                                        <div class="dish-description">{{d.description .split()[:3] | join(' ')}}</div>
+  <div class="dish-price">₹{{d.price}}</div>
+
                                     </div>
-                                    <div class="dish-total">Total: ₹<span id="total-{{ dish.id }}">0</span></div>
+                                    <div class="dish-actions">
+                                        <div class="quantity-controls">
+                <button class="quantity-btn" onclick="changeDishQuantity({{ d.id }}, -1)">−</button>
+                <div class="quantity-display" id="qty-{{ d.id }}">0</div>
+                <button class="quantity-btn" onclick="changeDishQuantity({{ d.id }}, 1)">+</button>
+                                        </div>
+                                        <!-- <div class="dish-total">Total: ₹<span id="total-1">0</span></div> -->
+                                    </div>
                                 </div>
                             </div>
                             {% endfor %}
+
+
+                      
+
+                            
+                    
+                             
                         </div>
                     </div>
-                    {% endif %}
-                {% endfor %}
+                </div>
+
+                <!-- Breads -->
+        <div class="category-section">
+                    <div class="category-header">Breads</div>
+                    <div class="dish-scroll-container">
+                        <div class="dish-list">
+                                                {% for d in dishes_by_category['Breads'] %}
+
+                            <div class="dish-item">
+<img src="{{ url_for('static', filename='uploads/images/' + (d.image if d.image else 'default.png')) }}"
+     alt="{{ d.name }}" class="dish-image">                                <div class="dish-content">
+                                    <div class="dish-info">
+                                        <div class="dish-name">{{d.name}}</div>
+                                        <div class="dish-description">{{d.description .split()[:3] | join(' ')}}</div>
+  <div class="dish-price">₹{{d.price}}</div>
+
+                                    </div>
+                                    <div class="dish-actions">
+                                        <div class="quantity-controls">
+                <button class="quantity-btn" onclick="changeDishQuantity({{ d.id }}, -1)">−</button>
+                <div class="quantity-display" id="qty-{{ d.id }}">0</div>
+                <button class="quantity-btn" onclick="changeDishQuantity({{ d.id }}, 1)">+</button>
+                                        </div>
+                                        <!-- <div class="dish-total">Total: ₹<span id="total-1">0</span></div> -->
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                    
+                             
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beverages -->
+          <div class="category-section">
+                    <div class="category-header">Main Course</div>
+                    <div class="dish-scroll-container">
+                        <div class="dish-list">
+                                                {% for d in dishes_by_category['Main Course'] %}
+
+                            <div class="dish-item">
+<img src="{{ url_for('static', filename='uploads/images/' + (d.image if d.image else 'default.png')) }}"
+     alt="{{ d.name }}" class="dish-image">                                <div class="dish-content">
+                                    <div class="dish-info">
+                                        <div class="dish-name">{{d.name}}</div>
+                                        <div class="dish-description">{{d.description .split()[:3] | join(' ')}}</div>
+  <div class="dish-price">₹{{d.price}}</div>
+
+                                    </div>
+                                    <div class="dish-actions">
+                                        <div class="quantity-controls">
+                <button class="quantity-btn" onclick="changeDishQuantity({{ d.id }}, -1)">−</button>
+                <div class="quantity-display" id="qty-{{ d.id }}">0</div>
+                <button class="quantity-btn" onclick="changeDishQuantity({{ d.id }}, 1)">+</button>
+                                        </div>
+                                        <div class="dish-total">Total: ₹<span id="total-1">0</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+                    
+                             
+                        </div>
+                    </div>
+                    
+                </div>
             </div>
 
             <!-- Summary Box -->
-            <div class="summary-box">
+               <div class="summary-box">
                 <h3>Order Summary</h3>
+                
+                <!-- Added selected dishes display section -->
+                <div class="selected-dishes-section" id="selected-dishes-section" style="display: none;">
+                    <h4 style="color: #d4af37; font-size: 1.2rem; margin-bottom: 1rem; text-align: center; font-weight: 500;">Selected Dishes</h4>
+                    <div class="selected-dishes-list" id="selected-dishes-list">
+                        <!-- Selected dishes will be populated here -->
+                    </div>
+                    <hr style="border: none; height: 1px; background: #f0e6d2; margin: 1.5rem 0;">
+                </div>
+                
                 <div class="summary-item">
                     <span class="summary-label">Per Guest Total:</span>
                     <span class="summary-value">₹<span id="per-guest-total">0</span></span>
                 </div>
                 <div class="summary-item">
                     <span class="summary-label">Total Guests:</span>
-                    <span class="summary-value"><span id="guest-output">100</span></span>
+                    <span class="summary-value"><span id="total-guests">100</span></span>
                 </div>
                 <div class="final-total">
                     <span class="summary-label">Final Total:</span>
                     <span class="summary-value">₹<span id="final-total">0</span></span>
                 </div>
-                <button class="quote-btn" onclick="getQuote()">Get Quote</button>
+                <button class="quote-btn" onclick="generateQuote()">Get Quote</button>
             </div>
+    
         </div>
     </div>
-
+      
     <script>
-        // Store dish data from Flask template
-        const dishData = {
-            {% for dish in dishes %}
-            {{ dish.id }}: {
-                id: {{ dish.id }},
-                name: "{{ dish.name }}",
-                price: {{ dish.price }},
-                category: "{{ dish.category }}",
-                description: "{{ dish.description or '' }}",
-                quantity: 0
-            }{% if not loop.last %},{% endif %}
-            {% endfor %}
-        };
 
-        // Change guest count
+        const dishes = {{ dishes_js | tojson }};
+         let quantities = {};
+
+
+
+            // Store quantities for each dish
+            // let quantities = {};
+
+            // Initialize quantities
+         Object.keys(dishes).forEach(id => {
+        quantities[id] = 0;
+    });
+
         function changeGuests(change) {
             const guestInput = document.getElementById('guest-count');
-            let currentGuests = parseInt(guestInput.value) || 0;
-            let newGuests = Math.max(1, currentGuests + change);
-            guestInput.value = newGuests;
+            let currentGuests = parseInt(guestInput.value) || 100;
+            currentGuests += change;
+            if (currentGuests < 1) currentGuests = 1;
+            guestInput.value = currentGuests;
             updateTotal();
         }
 
-        // Change dish quantity
-        function changeDishQuantity(dishId, change) {
-            const dish = dishData[dishId];
-            if (!dish) return;
+       function changeDishQuantity(dishId, change) {
+    // Initialize quantity if not already set
+    if (!(dishId in quantities)) quantities[dishId] = 0;
 
-            dish.quantity = Math.max(0, dish.quantity + change);
-            
-            // Update UI
-            document.getElementById(`qty-${dishId}`).textContent = dish.quantity;
-            document.getElementById(`total-${dishId}`).textContent = dish.price * dish.quantity;
-            
-            // Update minus button state
-            const minusBtn = document.querySelector(`[onclick="changeDishQuantity(${dishId}, -1)"]`);
-            minusBtn.disabled = dish.quantity <= 0;
-            
-            updateTotal();
+    // Change quantity (never below 0)
+    quantities[dishId] = Math.max(0, quantities[dishId] + change);
+
+    // Update quantity display
+    document.getElementById(`qty-${dishId}`).textContent = quantities[dishId];
+
+    // Update per-dish total
+    const price = dishes[dishId]?.price || 0;
+    const dishTotal = quantities[dishId] * price;
+    document.getElementById(`total-${dishId}`).textContent = dishTotal;
+
+    // ✅ Recalculate per-guest total + final total automatically
+    updateTotal();
+}
+
+
+     function updateTotal() {
+    const guests = parseInt(document.getElementById('guest-count')?.value) || 100;
+
+    let perGuestTotal = 0;
+    Object.keys(quantities).forEach(id => {
+        perGuestTotal += quantities[id] * (dishes[id]?.price || 0);
+    });
+
+    const finalTotal = perGuestTotal * guests;
+
+    // Update DOM
+    document.getElementById('per-guest-total').textContent = perGuestTotal;
+    document.getElementById('total-guests').textContent = guests;
+    document.getElementById('final-total').textContent = finalTotal;
+
+    updateSelectedDishesDisplay();
+}
+
+        function updateSelectedDishesDisplay() {
+    const section = document.getElementById('selected-dishes-section');
+    const list = document.getElementById('selected-dishes-list');
+
+    const selected = Object.keys(quantities)
+        .filter(id => quantities[id] > 0)
+        .map(id => ({
+            name: dishes[id]?.name || "Dish",
+            price: dishes[id]?.price || 0,
+            qty: quantities[id],
+            total: quantities[id] * (dishes[id]?.price || 0)
+        }));
+
+    if (selected.length > 0) {
+        section.style.display = "block";
+        list.innerHTML = selected.map(dish => `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid #f5f1e8;">
+                <div style="flex:1;">
+                    <div style="font-weight:600;color:#2c2c2c;font-size:0.9rem;">${dish.name}</div>
+                    <div style="color:#666;font-size:0.8rem;">₹${dish.price} × ${dish.qty}</div>
+                </div>
+                <div style="color:#d4af37;font-weight:bold;font-size:0.9rem;">₹${dish.total}</div>
+            </div>
+        `).join('');
+    } else {
+        section.style.display = "none";
+    }
+}
+
+// Initialize totals on page load
+updateTotal();
+        // }
+function generateQuote() {
+    const guests = parseInt(document.getElementById('guest-count').value) || 100;
+
+    const perGuestTotal = parseInt(document.getElementById('per-guest-total').textContent) || 0;
+    const finalTotal = parseInt(document.getElementById('final-total').textContent) || 0;
+
+    if (perGuestTotal === 0) {
+        alert('Please select at least one dish to generate a quote.');
+        return;
+    }
+
+    let selectedDishes = [];
+    let dishBreakdown = [];
+
+    Object.keys(dishes).forEach(id => {
+        const qty = quantities[id];
+        const price = parseInt(dishes[id].price);
+        if (qty > 0 && price > 0) {
+            const totalForDish = qty * price;
+            selectedDishes.push(`${dishes[id].name} (${qty} portions)`);
+            dishBreakdown.push(`• ${dishes[id].name}: ₹${price} × ${qty} = ₹${totalForDish}`);
         }
+    });
 
-        // Update total calculations
-        function updateTotal() {
-            const guestCount = parseInt(document.getElementById('guest-count').value) || 0;
-            document.getElementById('guest-output').textContent = guestCount;
+    const quote = `
+Wedding Catering Quote
+=====================
 
-            let perGuestTotal = 0;
+Number of Guests: ${guests}
+Selected Items:
+${selectedDishes.map(dish => `• ${dish}`).join('\n')}
 
-            // Calculate total from all dishes
-            Object.values(dishData).forEach(dish => {
-                perGuestTotal += dish.price * dish.quantity;
-            });
+Itemized Breakdown:
+${dishBreakdown.join('\n')}
 
-            document.getElementById('per-guest-total').textContent = perGuestTotal;
-            document.getElementById('final-total').textContent = perGuestTotal * guestCount;
-        }
+Per Guest Cost: ₹${perGuestTotal}
+Total Cost: ₹${finalTotal}
 
-        // Get quote function
-        function getQuote() {
-            const guestCount = parseInt(document.getElementById('guest-count').value) || 0;
-            const finalTotal = parseInt(document.getElementById('final-total').textContent) || 0;
-            
-            if (finalTotal === 0) {
-                alert('Please select some dishes to get a quote!');
-                return;
-            }
+Thank you for choosing Dream Creation for your special day!
+`;
 
-            let selectedDishes = [];
-            Object.values(dishData).forEach(dish => {
-                if (dish.quantity > 0) {
-                    selectedDishes.push(`${dish.name} x${dish.quantity}`);
-                }
-            });
+    alert(quote);
 
-            const message = `Quote Request:\n\nGuests: ${guestCount}\nSelected Dishes:\n${selectedDishes.join('\n')}\n\nTotal Amount: ₹${finalTotal}\n\nThank you for choosing Dream Creation!`;
-            
-            alert(message);
-            
-      
-        }
+    // ✅ Ask for contact details
+    const userEmail = prompt("Please enter your email:");
+    if (!userEmail) return alert("Email is required to send the quote.");
 
-        // Initialize the page
-        updateTotal();
+    const userMobile = prompt("Please enter your mobile number:");
+    if (!userMobile) return alert("Mobile number is required to send the quote.");
+
+    // ✅ Send email with contact details
+    fetch("/send-quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            email: "abbdulrazza@gmail.com",
+            subject: "Wedding Catering Quote",
+            message: `${quote}\n\nSender Details:\nEmail: ${userEmail}\nMobile: ${userMobile}`
+        })
+    })
+    .then(res => res.json())
+    .then(data => alert(data.message))
+    .catch(err => {
+        console.error(err);
+        alert("Failed to send email. Please try again.");
+    });
+
+    updateTotal();
+}
     </script>
-{% endblock %}
+</body>
+</html>

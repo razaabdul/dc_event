@@ -25,6 +25,10 @@
                             <i class="bi bi-plus-circle me-2"></i>
                             Add New Event
                         </a>
+                         <a href="{{ url_for('dish_dashboard') }}" class="btn btn-orange">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            Add New Event
+                        </a>
                     </div>
                 </div>
             </div>
@@ -64,16 +68,27 @@
                         <div class="row g-0">
                             <!-- Video Section -->
                             <div class="col-md-3">
-                                {% if event.image %}
-                                <video class="dish-image" id="video-{{ event.id }}" muted loop playsinline autoplay>
-                                    <source src="{{ url_for('static', filename=event.image.replace('static/', '').replace('\\', '/')) }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                                {% else %}
-                                <div class="dish-image d-flex align-items-center justify-content-center bg-light">
-                                    <i class="bi bi-camera-video text-muted" style="font-size: 2rem;"></i>
-                                </div>
-                                {% endif %}
+                         {% if event.image %}
+        {% set ext = event.image.split('.')[-1]|lower %}
+        {% set media_path = event.image.replace('static/', '').replace('\\', '/') %}
+        
+        {% if ext in ['mp4', 'webm', 'ogg', 'mov', 'avi'] %}
+            <video class="dish-image" id="video-{{ event.id }}" muted loop playsinline autoplay>
+                <source src="{{ url_for('static', filename=media_path) }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        {% elif ext in ['jpg', 'jpeg', 'png', 'gif'] %}
+            <img class="dish-image img-fluid" src="{{ url_for('static', filename=media_path) }}" alt="Event Image">
+        {% else %}
+            <div class="dish-image d-flex align-items-center justify-content-center bg-light">
+                <i class="bi bi-file-earmark text-muted" style="font-size: 2rem;"></i>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="dish-image d-flex align-items-center justify-content-center bg-light">
+            <i class="bi bi-camera-video text-muted" style="font-size: 2rem;"></i>
+        </div>
+    {% endif %}
                             </div>
                             
                             <!-- Event Info Section -->

@@ -9,10 +9,10 @@
     <div class="hero-content">
         <h1 class="hero-title">
             DC EVENT
-            <span class="hero-subtitle">WEDDING PLANNER</span>
+            WEDDING PLANNER
         </h1>
         <p class="hero-description">
-            Creating magical moments and unforgettable memories for your special day. 
+            <!-- Creating magical moments and unforgettable memories for your special day.  -->
            
         </p>
         <div class="hero-buttons">
@@ -26,9 +26,7 @@
             </a>
         </div>
     </div>
-    <div class="hero-scroll">
-        <i class="fas fa-chevron-down"></i>
-    </div>
+
 </section>
 
 
@@ -166,43 +164,49 @@
  
 <section class="events-section" id="events">
   <div class="container">
-    <div class="section-header">
-      <h2>Recent Events</h2>
-      <p>Take a look at some of our recent successful wedding celebrations</p>
-      <div class="section-divider"></div>
+    <div class="section-header text-center mb-5">
+      <h2 class="fw-bold">Recent Events</h2>
+      <p class="text-muted">Take a look at some of our recent successful wedding celebrations</p>
+      <div class="section-divider mx-auto"></div>
     </div>
 
     <!-- Scroller -->
     <div class="events-scroller-viewport">
-      <div class="events-track">
-        {% for event in events %}
-        <div class="event-card">
-          <div class="event-image">
-                    {% if event.image.endswith('.mp4') %}
-
-            <video id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
-              <source src="{{ url_for('static', filename=event.image) }}" type="video/mp4">
-            </video>
-                    {% else %}
-        <img class="hero-video" src="{{ url_for('static', filename=event.image) }}" alt="{{ event.name }}">
-{% endif %}
-            <div class="event-overlay">
-              <div class="event-info">
-                <h3>{{ event.name }}</h3>
-                <p><i class="fas fa-calendar"></i> {{ event.date.strftime('%B %d, %Y') }}</p>
-                <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
-                <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
-              </div>
-            </div>
-          </div>
-          <div class="event-content">
-            <h4>{{ event.name }}</h4>
-            <p>{{ event.description }}</p>
+      <div class="events-track d-flex gap-4">
+ {% set repeat_count = 10 %}
+{% for i in range(repeat_count) %}
+  {% for event in events %}
+    <div class="event-card position-relative">
+      <div class="event-media-wrapper">
+        {% set ext = event.image.split('.')[-1]|lower %}
+        {% set media_path = event.image.replace('\\', '/') %}
+        {% if ext in ['mp4', 'webm', 'ogg', 'mov', 'avi'] %}
+          <video class="event-media" muted loop playsinline autoplay>
+            <source src="{{ url_for('static', filename=media_path) }}" type="video/mp4">
+          </video>
+        {% else %}
+          <img src="{{ url_for('static', filename=media_path) }}" alt="{{ event.name }}" class="event-media">
+        {% endif %}
+        <div class="event-overlay text-white">
+          <div class="event-info">
+            <h3>{{ event.name }}</h3>
+            <p><i class="fas fa-calendar"></i> {{ event.date.strftime('%B %d, %Y') }}</p>
+            <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+            <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
+            <!-- <p class="text-muted mb-0">{{ event.description }}</p> -->
+             <p class="text-muted mb-0">
+  {{ event.description.split()[:3] | join(' ') }}
+</p>
           </div>
         </div>
-        {% endfor %}
       </div>
     </div>
+  {% endfor %}
+{% endfor %}
+
+  </div>
+</section>
+
 
     <div class="events-footer">
       <a href="{{ url_for('events') }}" class="btn btn-primary">View All Events</a>

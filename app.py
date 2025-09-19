@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash ,session
+from flask import Flask, render_template, request, redirect, url_for, flash ,session,jsonify
 import os 
 import click
-from models import db, dish,Contact,event
+from models import db, dish,Contact,event,User,bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_mail import Mail
@@ -9,6 +9,14 @@ from flask_mail import Message
 from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from datetime import datetime
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email.header import Header
+
+import smtplib
+from email import encoders
+import json
 
 # from flask_wtf import CSRFProtect
 
@@ -49,21 +57,65 @@ mail = Mail(app)
 UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads', 'videos')
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads', 'videos')
 
-ALLOWED_EXTENSIONS =  {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'webm', 'ogg'}
 
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    allowed_extensions = {'mp4', 'mov', 'avi', 'jpg', 'jpeg', 'png', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
+
+
+from functools import wraps
+
+
+
+
+
+
+
+# Hardcoded admin credentials
+ADMIN_USERNAME = "dcevent"
+ADMIN_PASSWORD = "dcevent123"
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # ✅ Check against static credentials
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session['user'] = username  # store in session
+            flash("Welcome, Admin!", "success")
+            return redirect(url_for('dish_dashboard'))  # go to admin dashboard
+        else:
+            flash("Invalid username or password", "danger")
+            return redirect(url_for('login'))
+
+    # ✅ IMPORTANT: Handle GET request (when user just opens /login page)
+    return render_template('login.html')
+
+
+@app.route("/logout")
+def logout():
+    session.clear()  # ✅ remove user from session
+    flash("Logged out successfully", "success")
+    return redirect(url_for("login"))
 
 
 @app.route('/admin/dishes')
 def dish_dashboard():
+        # You can check admin user manually here
+    if 'user' not in session:
+        flash("Please login first", "warning")
+        return redirect(url_for('login'))
     dishes = dish.query.all()
     total_dishes=len(dishes)
     return render_template('dishe.html', dishes=dishes,total=total_dishes)
 
-@app.route('/admin/dishes/add', methods=['POST'])
+
+    return render_template("login.html")
+@app.route('/admin/dishes/add', methods=['GET', 'POST'])
 def add_dish():
     name = request.form['name']
     cuisine = request.form['cuisine']
@@ -202,46 +254,51 @@ def add_event():
 @app.route('/admin/events/edit/<int:id>', methods=['GET', 'POST'])
 def edit_event(id):
     e = event.query.get_or_404(id)
+
     if request.method == 'POST':
         name = request.form['name']
         date_str = request.form['date']
         date = datetime.strptime(date_str, "%Y-%m-%d").date()
-
         location = request.form['location']
         guests = request.form['guests']
         description = request.form.get('description')
 
         # Handle file upload (video or image)
-        uploaded_file = request.files.get('media')  # rename input field in form to "media"
+        uploaded_file = request.files.get('image')  # must match form field name
         media_path = None
 
-    if uploaded_file and allowed_file(uploaded_file.filename):
-        filename = secure_filename(uploaded_file.filename)
+        if uploaded_file and allowed_file(uploaded_file.filename):
+            filename = secure_filename(uploaded_file.filename)
+            ext = filename.rsplit('.', 1)[-1].lower()
 
-        # Ensure upload folder exists
-        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+            # Choose subfolder based on file type
+            subfolder = 'videos' if ext in ['mp4', 'mov', 'avi', 'webm', 'ogg'] else 'media'
+            upload_folder = os.path.join(app.root_path, 'static', 'uploads', subfolder)
+            os.makedirs(upload_folder, exist_ok=True)
 
-        # Save file
-        save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        uploaded_file.save(save_path)
+            save_path = os.path.join(upload_folder, filename)
+            uploaded_file.save(save_path)
 
-        # Store only relative path (without "static/")
-        media_path = f"uploads/media/{filename}"
+            # Store relative path for template rendering
+            media_path = f"uploads/{subfolder}/{filename}"
 
-    # Save event
-        e = Event(
-            name=name,
-            date=date,
-            location=location,
-            guests=guests,
-            image=media_path,  # can be video or image
-            description=description
-        )
-        db.session.add(e)
+        # Update existing event fields
+        e.name = name
+        e.date = date
+        e.location = location
+        e.guests = guests
+        e.description = description
+        if media_path:
+            e.image = media_path  # update only if new media is uploaded
+
         db.session.commit()
-        return redirect(url_for('events_dashboard'))
+
+        # Redirect back to the same page
+        return redirect(request.referrer or url_for('events_dashboard'))
 
     return render_template('edit_event.html', event=e)
+
+
 
 # Delete Event
 @app.route('/admin/events/delete/<int:id>')
@@ -267,18 +324,26 @@ def events_dashboard():
 def calculator():
     all_dishes=dish.query.all()
     categories = ['Appetizer', 'Main Course', 'Dessert','Breads','Drinks']
-
     dishes_by_category = {cat: [] for cat in categories}
+    dishes_js = {}
 
     for d in all_dishes:
         if d.category in categories:
-            dishes_by_category[d.category].append({
+            dish_data = {
                 'id': d.id,
                 'name': d.name,
                 'description': d.description,
-                'price': d.price
-            })
-    return render_template('calculator.html', dishes_by_category=dishes_by_category)
+                'price':int(d.price),
+                'image': d.image
+            }
+            dishes_by_category[d.category].append(dish_data)
+            dishes_js[d.id] = dish_data  # store for JS
+
+    return render_template(
+        'calculator.html',
+        dishes_by_category=dishes_by_category,
+        dishes_js=dishes_js
+    )
 
 
 # Sample data (in a real app, this would come from a database)
@@ -378,40 +443,7 @@ def imgsrc_filter(path):
 app.jinja_env.filters['imgsrc'] = imgsrc_filter
 
 
-dishes_data = {
-    'appetizers': [
-        {'name': 'Paneer Tikka', 'price': '₹300', 'veg': True},
-        {'name': 'Chicken Tikka', 'price': '₹400', 'veg': False},
-        {'name': 'Aloo Tikki', 'price': '₹200', 'veg': True},
-        {'name': 'Fish Amritsari', 'price': '₹450', 'veg': False}
-    ],
-    'main_course': [
-        {'name': 'Dal Makhani', 'price': '₹350', 'veg': True},
-        {'name': 'Butter Chicken', 'price': '₹500', 'veg': False},
-        {'name': 'Palak Paneer', 'price': '₹400', 'veg': True},
-        {'name': 'Mutton Curry', 'price': '₹600', 'veg': False},
-        {'name': 'Biryani', 'price': '₹450', 'veg': False},
-        {'name': 'Veg Biryani', 'price': '₹350', 'veg': True}
-    ],
-    'desserts': [
-        {'name': 'Gulab Jamun', 'price': '₹150', 'veg': True},
-        {'name': 'Ras Malai', 'price': '₹200', 'veg': True},
-        {'name': 'Ice Cream', 'price': '₹100', 'veg': True},
-        {'name': 'Kulfi', 'price': '₹120', 'veg': True}
-    ]
-}
 
-
-
-# @app.get("/api/dishes")
-# def api_dishes():
-#     # Simple: return all dishes, no filters/CRUD
-#     return jsonify(DISHES)
-
-# @app.get("/catering")
-# def catering_page():
-#     # Render a page that shows all dishes using a simple attractive grid
-#     return render_template("catering.html", dishes=DISHES)
 
 
 
@@ -501,6 +533,44 @@ Budget: {budget}
             return redirect(url_for('contact'))
 
     return render_template('contact.html')
+
+
+# Quote Request Page
+
+
+@app.route("/send-quote", methods=["POST"])
+def send_quote():
+    data = request.get_json()
+    recipient = data.get("email")
+    subject = data.get("subject")
+    message_body = data.get("message")
+
+    try:
+        sender_email = "abbdulrazza@gmail.com"
+        sender_password = "tuhy dogj olnq nioj"  # Gmail App Password
+
+        # ✅ Use UTF-8 everywhere
+        msg = MIMEMultipart()
+        msg["From"] = str(Header(sender_email, "utf-8"))
+        msg["To"] = str(Header(recipient, "utf-8"))
+        msg["Subject"] = str(Header(subject, "utf-8"))  # subject safe for utf-8
+
+        # ✅ Explicitly tell MIMEText to use UTF-8
+        body = MIMEText(message_body, "plain", "utf-8")
+        msg.attach(body)
+
+        # ✅ Convert to bytes with utf-8 (avoids ASCII fallback)
+        email_bytes = msg.as_bytes()
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender_email, sender_password)
+            server.sendmail(sender_email, recipient, email_bytes)
+
+        return jsonify({"message": "Quote sent successfully!"})
+
+    except Exception as e:
+        print(f"Email send failed: {e}")  # log server-side for debugging
+        return jsonify({"message": f"Failed to send email: {str(e)}"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True,port=5000)

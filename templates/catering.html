@@ -139,7 +139,7 @@
         </div>
         <div class="dish-body">
           <h3 id="dish-{{ dish.id }}" class="dish-title">{{ dish.name }}</h3>
-          {% if dish.description %}<p class="dish-desc">{{ dish.description }}</p>{% endif %}
+          {% if dish.description %}<p class="dish-desc">{{ dish.description .split()[:3]|join(' ')}}</p>{% endif %}
           <div class="dish-meta">
             {% if dish.price %}<span class="price">₹{{ dish.price }}</span>{% endif %}
           </div>
