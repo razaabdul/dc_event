@@ -17,6 +17,7 @@ from email.header import Header
 import smtplib
 from email import encoders
 import json
+from functools import wraps
 
 # from flask_wtf import CSRFProtect
 
@@ -26,10 +27,8 @@ load_dotenv()
 app = Flask(__name__, static_folder='static')
 app.secret_key = os.getenv("SECRET_KEY", "fallback-secret")
 
-# Database config
 # Database config (Postgres)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    "DATABASE_URL")  # Read from environment
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")  # Read from environment
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Bind SQLAlchemy to app
@@ -39,7 +38,6 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 # Flask-Mail config
-# Flask Config from .env
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
 app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
 app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT"))
@@ -65,11 +63,19 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
 
 
-from functools import wraps
 
 
 
-
+# ✅ Auto-create tables if they don't exist (runs only once per fresh database)
+@app.before_first_request
+def create_tables_if_not_exists():
+    with app.app_context():
+        try:
+            from models import db  # Import models to register tables
+            db.create_all()
+            print("✅ Tables created successfully (if they didn't exist)")
+        except Exception as e:
+            print(f"⚠️ Skipping table creation: {e}")
 
 
 
