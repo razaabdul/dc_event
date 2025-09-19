@@ -6,3 +6,5 @@ python-dotenv
 flask_migrate
 psycopg2
 attrs==23.2.0
+Flask-Bcrypt
+requests
