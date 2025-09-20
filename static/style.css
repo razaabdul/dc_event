@@ -91,6 +91,8 @@ body {
   color: white;
   z-index: 1000;               /* stay above other elements */
   transition: all 0.3s ease;
+    position: relative; /* ensure navbar is its own stacking context */
+
 }
 .nav-container {
   display: flex;
@@ -104,9 +106,12 @@ body {
 }
 
 .nav-menu {
-  display: flex;
   list-style: none;
   gap: 20px;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-menu li a {

@@ -548,25 +548,113 @@ width: 160%;
   padding: 1rem;
 }
 
+.navbar {
+  background: #111; /* Dark background */
+  padding: 0.5rem 2rem;
+}
 
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Logo */
+.logo-img {
+  height: 50px;
+  width: auto;
+}
+
+/* Menu */
+.nav-menu {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu li a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-menu li a:hover,
+.nav-menu li a.active {
+  color: #f5c518; /* Highlight color */
+}
+
+/* Mobile Menu */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.nav-toggle span {
+  background: white;
+  height: 3px;
+  width: 25px;
+  margin: 4px 0;
+  transition: 0.3s;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-menu {
+    position: absolute;
+    top: 70px;
+    right: 0;
+    background: #111;
+    flex-direction: column;
+    width: 100%;
+    display: none;
+    padding: 1rem;
+  }
+
+  .nav-menu.show {
+    display: flex;
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+}
 
     </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
-        <nav class="nav">
-            <div class="logo">IQ</div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#packages">Packages</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#events">Events</a></li>
-                <li><a href="#catering">Catering</a></li>
-                <li><a href="#calculate" class="active">Calculate plate</a></li>
-                <li><a href="#contact">Contact</a></li>
+         <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+           <div class="nav-logo">
+    <img src="{{ url_for('static', filename='Screenshot 2025-08-11 175851.png') }}" alt="DC Event Logo" class="logo-img">
+    <!-- <span>DC EVENT</span> -->
+</div>
+
+            <div class="nav-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' }}">Home</a></li>
+                <li><a href="{{ url_for('packages') }}" class="{{ 'active' if request.endpoint == 'packages' }}">Packages</a></li>
+                <li><a href="{{ url_for('services') }}" class="{{ 'active' if request.endpoint == 'services' }}">Services</a></li>
+                <li><a href="{{ url_for('events') }}" class="{{ 'active' if request.endpoint == 'events' }}">Events</a></li>
+                <li><a href="{{ url_for('dishes') }}" class="{{ 'active' if request.endpoint == 'dishes' }}">Catering</a></li>
+                <li><a href="{{ url_for('calculator') }}" class="{{ 'active' if request.endpoint == 'calculator' }}">Calculate plate</a></li>
+                <li><a href="{{ url_for('contact') }}" class="{{ 'active' if request.endpoint == 'contact' }}">Contact</a></li>
             </ul>
-        </nav>
+            
+        </div>
+    </nav>   
     </header>
 
     <!-- Hero Section -->

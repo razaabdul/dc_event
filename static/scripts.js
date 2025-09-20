@@ -303,3 +303,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
      const track = document.getElementById('eventsTrack');
   track.innerHTML += track.innerHTML;
+
+  document.getElementById("mobile-menu").addEventListener("click", function () {
+  document.getElementById("nav-menu").classList.toggle("show");
+});
