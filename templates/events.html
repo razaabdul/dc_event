@@ -22,52 +22,40 @@
 
         <div class="events-grid">
            {% for event in all_evnt %}
-<div class="event-card">
-    <div class="event-image">
-        {% if event.image %}
-            {% if event.image.endswith('.mp4') or event.image.endswith('.webm') or event.image.endswith('.ogg') %}
-                <!-- Show video -->
-                <video id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
-                    <source src="{{ url_for('static', filename=event.image) }}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <div class="event-overlay">
-                    <div class="event-info">
-                        <h3>{{ event.name }}</h3>
-                        <p><i class="fas fa-calendar"></i> {{ event.date }}</p>
-                        <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
-                        <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
-                        <span class="btn btn-primary btn-small" onclick="playVideoFullscreen('{{ event.id }}')">Click to Play</span>
+    <div class="event-card">
+        <div class="event-image">
+            {% if event.image %}
+                {% if event.image.endswith('.mp4') or event.image.endswith('.webm') or event.image.endswith('.ogg') %}
+                    <video id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
+                        <source src="{{ url_for('static', filename=event.image) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="event-overlay">
+                        <div class="event-info">
+                            <h3>{{ event.name }}</h3>
+                            <p><i class="fas fa-calendar"></i> {{ event.date or '' }}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+                            <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
+                            <span class="btn btn-primary btn-small" onclick="playVideoFullscreen('{{ event.id }}')">Click to Play</span>
+                        </div>
                     </div>
-                </div>
+                {% else %}
+                    <img src="{{ url_for('static', filename=event.image) }}" alt="{{ event.name }}" class="event-img">
+                    <div class="event-overlay">
+                        <div class="event-info">
+                            <h3>{{ event.name }}</h3>
+                            <p><i class="fas fa-calendar"></i> {{ event.date or '' }}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+                            <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
+                        </div>
+                    </div>
+                {% endif %}
             {% else %}
-                <!-- Show image -->
-                <img src="{{ url_for('static', filename=event.image) }}" alt="{{ event.name }}" class="event-img">
-                <div class="event-overlay">
-                    <div class="event-info">
-                        <h3>{{ event.name }}</h3>
-                         <p><i class="fas fa-calendar"></i> {{ event.date }}</p>
-                        <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
-                        <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
-                    </div>
-                </div>
+                <img src="{{ url_for('static', filename='uploads/media/default.jpg') }}" alt="No media available" class="event-img">
             {% endif %}
-        {% else %}
-            <!-- Fallback if no media -->
-            <img src="{{ url_for('static', filename='uploads/media/default.jpg') }}" alt="No media available" class="event-img">
-        {% endif %}
-    </div>
-<!-- 
-    <div class="event-content">
-        <h4>{{ event.name }}</h4>
-        <p>{{ event.description }}</p>
-        <div class="event-meta">
-            <span><i class="fas fa-calendar"></i> {{ event.date }}</span>
-            <span><i class="fas fa-map-marker-alt"></i> {{ event.location }}</span>
         </div>
-    </div> -->
-</div>
-{% endfor %}
+    </div>
+    {% endfor %}
         </div>
     </div>
 </section>
