@@ -21,41 +21,53 @@
         </div>
 
         <div class="events-grid">
-           {% for event in all_evnt %}
-    <div class="event-card">
-        <div class="event-image">
-            {% if event.image %}
-                {% if event.image.endswith('.mp4') or event.image.endswith('.webm') or event.image.endswith('.ogg') %}
-                    <video id="video-{{ event.id }}" class="hero-video" muted loop playsinline autoplay>
-                        <source src="{{ url_for('static', filename=event.image) }}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <div class="event-overlay">
-                        <div class="event-info">
-                            <h3>{{ event.name }}</h3>
-                            <p><i class="fas fa-calendar"></i> {{ event.date or '' }}</p>
-                            <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
-                            <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
-                            <span class="btn btn-primary btn-small" onclick="playVideoFullscreen('{{ event.id }}')">Click to Play</span>
-                        </div>
-                    </div>
-                {% else %}
-                    <img src="{{ url_for('static', filename=event.image) }}" alt="{{ event.name }}" class="event-img">
-                    <div class="event-overlay">
-                        <div class="event-info">
-                            <h3>{{ event.name }}</h3>
-                            <p><i class="fas fa-calendar"></i> {{ event.date or '' }}</p>
-                            <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
-                            <p><i class="fas fa-users"></i> {{ event.guests }} Guests</p>
-                        </div>
-                    </div>
-                {% endif %}
+{% for event in all_evnt %}
+<div class="event-card position-relative">
+    <div class="event-media-wrapper">
+        {% if event.image %}
+            {% set media_path = event.image.replace('\\', '/') %}
+            {% set ext = media_path.split('.')[-1]|lower %}
+            {% if ext in ['mp4', 'webm', 'ogg', 'mov', 'avi'] %}
+                <!-- Show video -->
+                <video id="video-{{ event.id }}" class="event-media" muted loop playsinline autoplay controls>
+                    {% if ext == 'mp4' %}
+                        <source src="{{ url_for('static', filename=media_path) }}" type="video/mp4">
+                    {% elif ext == 'webm' %}
+                        <source src="{{ url_for('static', filename=media_path) }}" type="video/webm">
+                    {% elif ext == 'ogg' %}
+                        <source src="{{ url_for('static', filename=media_path) }}" type="video/ogg">
+                    {% else %}
+                        <source src="{{ url_for('static', filename=media_path) }}" type="video/mp4">
+                    {% endif %}
+                    Your browser does not support the video tag.
+                </video>
             {% else %}
-                <img src="{{ url_for('static', filename='uploads/media/default.jpg') }}" alt="No media available" class="event-img">
+                <!-- Show image -->
+                <img src="{{ url_for('static', filename=media_path) }}" alt="{{ event.name }}" class="event-media">
             {% endif %}
+        {% else %}
+            <!-- Fallback image -->
+            <img src="{{ url_for('static', filename='uploads/media/default.jpg') }}" alt="No media available" class="event-media">
+        {% endif %}
+
+        <!-- Overlay with event info -->
+        <div class="event-overlay text-white">
+            <div class="event-info">
+                <h3>{{ event.name }}</h3>
+                <p><i class="fas fa-calendar"></i> {{ event.date.strftime('%B %d, %Y') if event.date else '' }}</p>
+                <p><i class="fas fa-map-marker-alt"></i> {{ event.location or '' }}</p>
+                <p><i class="fas fa-users"></i> {{ event.guests or 0 }} Guests</p>
+                {% if event.description %}
+                    <p class="text-muted mb-0">{{ event.description.split()[:10] | join(' ') }}{% if event.description.split()|length > 10 %}...{% endif %}</p>
+                {% endif %}
+                {% if ext in ['mp4', 'webm', 'ogg', 'mov', 'avi'] %}
+                    <span class="btn btn-primary btn-small" onclick="playVideoFullscreen('{{ event.id }}')">Click to Play</span>
+                {% endif %}
+            </div>
         </div>
     </div>
-    {% endfor %}
+</div>
+{% endfor %}
         </div>
     </div>
 </section>
