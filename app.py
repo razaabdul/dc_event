@@ -13,6 +13,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.header import Header
+from extensions import db, mail, migrate  # ✅ import single shared instances
 
 import smtplib
 from email import encoders
@@ -21,31 +22,68 @@ from functools import wraps
 
 # from flask_wtf import CSRFProtect
 
+
 load_dotenv()
 
-# Initialize Flask app
-app = Flask(__name__, static_folder='static')
-app.secret_key = os.getenv("SECRET_KEY", "fallback-secret")
+migrate = Migrate()
+mail = Mail()
 
-# Database config (Postgres)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")  # Read from environment
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+def create_app():
+    app = Flask(__name__, static_folder='static')
+    app.secret_key = os.getenv("SECRET_KEY", "fallback-secret")
 
-# Bind SQLAlchemy to app
-db.init_app(app)
+    # ✅ Configure SQLite before initializing db
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///local.db"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# Flask-Migrate setup
-migrate = Migrate(app, db)
+    # ✅ Configure mail (dummy)
+    app.config.update(
+        MAIL_SERVER='localhost',
+        MAIL_PORT=8025,
+        MAIL_USE_TLS=False,
+        MAIL_USE_SSL=False,
+        MAIL_USERNAME=None,
+        MAIL_PASSWORD=None,
+        MAIL_DEFAULT_SENDER='noreply@example.com'
+    )
 
-# Flask-Mail config
-app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
-app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
-app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT"))
-app.config['MAIL_USE_TLS'] = os.getenv("MAIL_USE_TLS") == "True"
-app.config['MAIL_USE_SSL'] = os.getenv("MAIL_USE_SSL") == "True"
-app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
-app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
-app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_DEFAULT_SENDER")
+    # ✅ Initialize all extensions (only once)
+    db.init_app(app)
+    migrate.init_app(app, db)
+    mail.init_app(app)
+
+    # ✅ Create tables if not exist
+    with app.app_context():
+        db.create_all()
+
+    return app
+
+
+
+
+app = create_app()
+
+
+
+# # Database config (Postgres)
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")  # Read from environment
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# # Bind SQLAlchemy to app
+# db.init_app(app)
+
+# # Flask-Migrate setup
+# migrate = Migrate(app, db)
+
+# # Flask-Mail config
+# app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+# app.config['MAIL_SERVER'] = os.getenv("MAIL_SERVER")
+# app.config['MAIL_PORT'] = int(os.getenv("MAIL_PORT"))
+# app.config['MAIL_USE_TLS'] = os.getenv("MAIL_USE_TLS") == "True"
+# app.config['MAIL_USE_SSL'] = os.getenv("MAIL_USE_SSL") == "True"
+# app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+# app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
+# app.config['MAIL_DEFAULT_SENDER'] = os.getenv("MAIL_DEFAULT_SENDER")
 
 mail = Mail(app)
 
